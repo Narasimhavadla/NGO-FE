@@ -38,7 +38,7 @@ export default function Events() {
   return (
     <div className="w-full font-sans">
       {/* ================= HERO ================= */}
-      <section className="relative h-[60vh] flex items-center justify-center text-center text-white">
+      <section className="relative h-[70vh] flex items-center justify-center text-center text-white">
         <img
           src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=2000&auto=format&fit=crop"
           alt="events"
@@ -53,7 +53,7 @@ export default function Events() {
           transition={{ duration: 0.7 }}
           className="relative z-10 px-6"
         >
-          <h1 className="text-3xl md:text-5xl font-bold mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 Chelsea">
             Our Events & Campaigns
           </h1>
           <p className="max-w-2xl mx-auto text-white/90">
@@ -64,8 +64,8 @@ export default function Events() {
       </section>
 
       {/* ================= UPCOMING EVENTS ================= */}
-      <section className="py-16 px-6 md:px-20 bg-gray-50">
-        <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+      <section className="py-8 px-6 md:px-20 bg-gray-50">
+        <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 smooch">
           Upcoming Events
         </h2>
 
@@ -117,7 +117,7 @@ export default function Events() {
 
       {/* ================= PAST EVENTS ================= */}
       <section className="py-16 px-6 md:px-20">
-        <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+        <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 smooch">
           Past Event Highlights
         </h2>
 
@@ -151,7 +151,7 @@ export default function Events() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-bold mb-4"
+          className="text-3xl md:text-4xl font-bold mb-4 Chelsea"
         >
           Be Part of Our Next Event
         </motion.h2>

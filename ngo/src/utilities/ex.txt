@@ -1,1 +1,1 @@
-            "url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?q=80&w=1600&auto=format&fit=crop)",
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.9342690412586!2d78.44668907390415!3d17.318720304782154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcbbd05d89d9b9d%3A0x385e70ac6f07a8f7!2sDHA&#39;TRUTH&#39;A%20being%20a%20giver!5e0!3m2!1sen!2sin!4v1770638726694!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>

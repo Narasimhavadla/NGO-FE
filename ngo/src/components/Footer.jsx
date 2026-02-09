@@ -1,9 +1,12 @@
+import { faFacebook, faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-gray-300 pt-12 pb-6 px-6">
       
       {/* Top Section */}
-      <div className="max-w-7xl mx-auto grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+      <div className="max-w-7xl mx-auto grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         
         {/* NGO Info */}
         <div>
@@ -22,35 +25,35 @@ export default function Footer() {
           <h3 className="text-lg font-semibold text-white mb-4">
             Quick Links
           </h3>
-          <ul className="space-y-2 text-sm">
-            <li>
+          <div className="space-y-2 text-sm">
+            
               <a href="/" className="hover:text-orange-500 transition">
                 Our Programs
               </a>
-            </li>
-            <li>
+            
+            
               <a href="/about-us" className="hover:text-orange-500 transition">
                 About Us
               </a>
-            </li>
             
-            <li>
+            
+            
               <a href="/our-team" className="hover:text-orange-500 transition">
                 Meet our Team
               </a>
-            </li>
-            <li>
+            
+            
               <a href="/contact-us" className="hover:text-orange-500 transition">
                 Contact
               </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-orange-500 transition">
+            
+            
+              <a href="/donation" className="hover:text-orange-500 transition">
                 Donate
               </a>
-            </li>
             
-          </ul>
+            
+          </div>
         </div>
 
         {/* Contact Info */}
@@ -66,28 +69,21 @@ export default function Footer() {
         </div>
 
         {/* Newsletter */}
-        {/* <div>
+        <div>
           <h3 className="text-lg font-semibold text-white mb-4">
             Newsletter
           </h3>
           <p className="text-sm mb-3">
             Subscribe for updates on our activities.
           </p>
+          <div className="flex gap-5">
+            <a href="https://www.youtube.com/@dhatruthabeingagiver" target="blank"><FontAwesomeIcon icon={faYoutube} className="text-red-500"/></a>
+            <a href="/" target="blank"><FontAwesomeIcon icon={faInstagram} className="text-purple-500"/></a>
+            <a href="/" target="blank"><FontAwesomeIcon icon={faFacebook} className="text-blue-500"/></a>
+          </div>
 
-          <form className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="email"
-              placeholder="Your Email"
-              className="px-3 py-2 rounded-md text-black w-full outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md text-white text-sm transition"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div> */}
+          
+        </div>
       </div>
 
       {/* Bottom Bar */}

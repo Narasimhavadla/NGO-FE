@@ -25,32 +25,33 @@ export default function Footer() {
           <h3 className="text-lg font-semibold text-white mb-4">
             Quick Links
           </h3>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 text-sm ">
             
               <a href="/" className="hover:text-orange-500 transition">
                 Our Programs
               </a>
+              <br></br>
             
             
               <a href="/about-us" className="hover:text-orange-500 transition">
                 About Us
               </a>
-            
-            
+              <br></br>
             
               <a href="/our-team" className="hover:text-orange-500 transition">
                 Meet our Team
               </a>
-            
+              <br></br>
             
               <a href="/contact-us" className="hover:text-orange-500 transition">
                 Contact
               </a>
-            
+              <br></br>
             
               <a href="/donation" className="hover:text-orange-500 transition">
                 Donate
               </a>
+              <br></br>
             
             
           </div>
@@ -62,9 +63,9 @@ export default function Footer() {
             Contact Us
           </h3>
           <ul className="space-y-2 text-sm">
-            <li>Email: support@hopehands.org</li>
-            <li>Phone: +91 XXXXXXXXXX</li>
-            <li>Address: Hyderabad, India</li>
+            <li>Email: dhatrutha@gmail.com</li>
+            <li>Phone: +91 9392784225</li>
+            <li>Address: Rajendra Nagar,Ranga Reddy, Hyderabad, India</li>
           </ul>
         </div>
 
@@ -88,7 +89,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-slate-700 mt-10 pt-5 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} HopeHands NGO. All Rights Reserved.
+        © {new Date().getFullYear()} DHATRUTHA NGO. All Rights Reserved.
       </div>
     </footer>
   );

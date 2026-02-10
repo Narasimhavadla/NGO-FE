@@ -11,6 +11,7 @@ import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import DonationPage from './pages/DonationPage';
 import VolunteerPage from './pages/Volunteer';
+import EventDetails from "./pages/EventDetails";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
        <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/our-team" element={<OurTeam />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/contact-us" element={<ContactUs />} />

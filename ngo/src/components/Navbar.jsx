@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../assets/DhatruthaLogo.png";
+import logo from "../assets/dhatruthaLogo.webp";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -41,17 +41,17 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-[#254151] text-white shadow-md">
+    <nav className="w-full bg-[#254151] text-white shadow-md sticky top-0 z-100">
       
       {/* ================= TOP BAR ================= */}
-      <div className="h-24 flex items-center justify-between px-6 lg:px-12 max-w-7xl mx-auto">
+      <div className="h-20 flex items-center justify-between px-6 lg:px-12 max-w-7xl mx-auto">
         
         {/* LOGO */}
         <NavLink to="/" className="flex items-center gap-2">
           <img
             src={logo}
             alt="logo"
-            className="w-16 h-16 lg:w-20 lg:h-20"
+            className="w-32 h-16 lg:w-42 lg:h-16"
           />
         </NavLink>
 
@@ -77,12 +77,15 @@ export default function Navbar() {
           <NavLink to="/contact-us" className={navLinkClass}>
             Contact Us
           </NavLink>
+           <NavLink to="/volunteer" className={navLinkClass}>
+            Volunteer
+          </NavLink>
         </div>
 
         {/* ================= DONATE ================= */}
         <div className="hidden lg:flex">
           <NavLink to="/donation">
-            <button className="px-6 py-3 text-lg font-semibold bg-[#F4CE50] text-[#254151] hover:bg-orange-400 hover:text-white transition flex items-center gap-2 rounded-md">
+            <button className="px-6 py-2 text-lg font-semibold bg-[#F4CE50] text-[#254151] hover:bg-orange-400 hover:text-white transition flex items-center gap-2 rounded-md">
               <FontAwesomeIcon icon={faHandHoldingHeart} />
               Donate
             </button>

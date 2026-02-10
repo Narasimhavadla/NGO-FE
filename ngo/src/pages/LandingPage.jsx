@@ -8,6 +8,7 @@ import {
   faUsers,
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const slides = [
   {
@@ -49,7 +50,7 @@ export default function LandingPage() {
   return (
     <div className="w-full overflow-hidden font-sans">
       {/* ================= HERO / CAROUSEL ================= */}
-      <div className="relative w-full h-[70vh] md:h-[85vh]">
+      <div className="relative w-full h-[95vh] md:h-[90vh]">
         <AnimatePresence>
           <motion.img
             key={slides[current].id}
@@ -92,21 +93,6 @@ export default function LandingPage() {
             </a>
           </div>
         </div>
-
-        {/* Arrows */}
-        {/* <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button> */}
-
-        {/* <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button> */}
       </div>
 
       {/* ================= ABOUT ================= */}
@@ -122,7 +108,7 @@ export default function LandingPage() {
               Who We Are
             </h2>
             <p className="text-gray-600 leading-relaxed">
-              We are a nonprofit organization dedicated to improving lives
+              We are a <span className="font-semibold">Nonprofit organization </span> dedicated to improving lives
               through education, healthcare, and sustainable community
               development programs. Our mission is to create equal
               opportunities for underprivileged communities.
@@ -179,11 +165,11 @@ export default function LandingPage() {
         <p className="mb-6 text-white/90">
           Your small contribution can make a big difference.
         </p>
-        <a href="/volunteer">
+        <Link to="/volunteer">
             <button className="bg-white text-green-700 px-8 py-3 rounded-2xl shadow font-semibold">
             Get Involved
             </button>
-        </a>
+        </Link>
       </section>
     </div>
   );

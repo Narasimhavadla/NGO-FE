@@ -8,6 +8,7 @@ import {
   faUsers,
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
+import { NavLink } from "react-router-dom";
 
 export default function AboutUs() {
   return (
@@ -250,9 +251,11 @@ export default function AboutUs() {
           through collective action.
         </p>
 
+          <NavLink to="/volunteer">
         <button className="bg-[#F4CE50] text-[#254151] px-8 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition">
           Become a Volunteer
         </button>
+        </NavLink>
       </section>
     </div>
   );

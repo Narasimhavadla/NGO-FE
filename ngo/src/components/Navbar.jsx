@@ -41,7 +41,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full bg-[#254151] text-white shadow-md sticky top-0 z-100">
+    <nav className="w-[100%] bg-[#254151] text-white shadow-md sticky top-0 z-100">
       
       {/* ================= TOP BAR ================= */}
       <div className="h-20 flex items-center justify-between px-6 lg:px-12 max-w-7xl mx-auto">
@@ -77,8 +77,11 @@ export default function Navbar() {
           <NavLink to="/contact-us" className={navLinkClass}>
             Contact Us
           </NavLink>
-           <NavLink to="/volunteer" className={navLinkClass}>
+           {/* <NavLink to="/volunteer" className={navLinkClass}>
             Volunteer
+          </NavLink> */}
+          <NavLink to="/login" className={navLinkClass}>
+            Login
           </NavLink>
         </div>
 
@@ -151,6 +154,22 @@ export default function Navbar() {
               onClick={handleLinkClick}
             >
               Contact Us
+            </NavLink>
+
+             {/* <NavLink
+              to="/volunteer"
+              className={navLinkClass}
+              onClick={handleLinkClick}
+            >
+              Volunteer
+            </NavLink> */}
+
+             <NavLink
+              to="/login"
+              className={navLinkClass}
+              onClick={handleLinkClick}
+            >
+              Login
             </NavLink>
 
             {/* DONATE */}

@@ -6,11 +6,23 @@ import {
   faGlobe,
   faHeart,
   faTimes,
+  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function VolunteerPage() {
   const [openModal, setOpenModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+
+  // FORM SUBMIT
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // 👉 Here you can connect API later
+
+    setOpenModal(false);     // Close form modal
+    setSuccessModal(true);  // Show success modal
+  };
 
   return (
     <div className="w-full min-h-screen bg-gray-50">
@@ -23,7 +35,6 @@ export default function VolunteerPage() {
           className="w-full h-full object-cover"
         />
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center px-4">
           <motion.h1
             initial={{ opacity: 0, y: -40 }}
@@ -61,7 +72,7 @@ export default function VolunteerPage() {
             {
               icon: faUsers,
               title: "Build Network",
-              desc: "Meet like‑minded people and leaders.",
+              desc: "Meet like-minded people and leaders.",
             },
             {
               icon: faGlobe,
@@ -92,7 +103,7 @@ export default function VolunteerPage() {
         </div>
       </div>
 
-      {/* MODAL */}
+      {/* APPLICATION MODAL */}
       <AnimatePresence>
         {openModal && (
           <motion.div
@@ -101,7 +112,6 @@ export default function VolunteerPage() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
           >
-            {/* Modal Box */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -109,7 +119,6 @@ export default function VolunteerPage() {
               transition={{ duration: 0.3 }}
               className="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-8 relative max-h-[90vh] overflow-y-auto"
             >
-              {/* Close Button */}
               <button
                 onClick={() => setOpenModal(false)}
                 className="absolute top-4 right-4 text-gray-500 hover:text-black"
@@ -122,20 +131,26 @@ export default function VolunteerPage() {
               </h2>
 
               {/* FORM */}
-              <form className="grid md:grid-cols-2 gap-4">
+              <form
+                onSubmit={handleSubmit}
+                className="grid md:grid-cols-2 gap-4"
+              >
                 <input
                   type="text"
                   placeholder="Full Name"
+                  required
                   className="border p-3 rounded-lg w-full"
                 />
                 <input
                   type="email"
                   placeholder="Email Address"
+                  required
                   className="border p-3 rounded-lg w-full"
                 />
                 <input
                   type="tel"
                   placeholder="Phone Number"
+                  required
                   className="border p-3 rounded-lg w-full"
                 />
                 <input
@@ -165,6 +180,53 @@ export default function VolunteerPage() {
                   Submit Application
                 </button>
               </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SUCCESS MODAL */}
+      <AnimatePresence>
+        {successModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
+          >
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.7, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center relative"
+            >
+              <button
+                onClick={() => setSuccessModal(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-black"
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+
+              <FontAwesomeIcon
+                icon={faCircleCheck}
+                className="text-green-500 text-5xl mb-4"
+              />
+
+              <h3 className="text-2xl font-bold mb-2">
+                Application Submitted!
+              </h3>
+
+              <p className="text-gray-600 mb-6">
+                Thank you for volunteering ❤️ <br />
+                Our team will contact you soon with further details.
+              </p>
+
+              <button
+                onClick={() => setSuccessModal(false)}
+                className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2 rounded-lg"
+              >
+                Close
+              </button>
             </motion.div>
           </motion.div>
         )}

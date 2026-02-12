@@ -12,7 +12,7 @@ import {
 export default function EventDetails() {
   const { id } = useParams();
 
-  // ===== EVENTS DATA (Replace with API later) =====
+  // ===== EVENTS DATA =====
   const events = [
     {
       id: "1",
@@ -23,10 +23,20 @@ export default function EventDetails() {
       image:
         "https://images.unsplash.com/photo-1580281657527-47c1f7f7f5c4?q=80&w=1600&auto=format&fit=crop",
       description:
-        "Our Free Health Checkup Camp is dedicated to providing quality healthcare services to underserved communities. Professional doctors and volunteers will conduct general checkups, eye screenings, BP monitoring, and distribute essential medicines free of cost.",
+        "Our Free Health Checkup Camp is dedicated to providing healthcare services to underserved communities. Professional doctors and volunteers conducted checkups, screenings, and distributed medicines.",
       impact:
-        "250+ beneficiaries will receive free consultations, medicines, and preventive healthcare awareness.",
+        "250+ beneficiaries received consultations, medicines, and preventive healthcare awareness.",
+
+      gallery: [
+        "https://images.unsplash.com/photo-1576091160550-2173dba999ef",
+        "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b",
+        "https://images.unsplash.com/photo-1530026405186-ed1f139313f8",
+        "https://images.unsplash.com/photo-1584515933487-779824d29309",
+        "https://images.unsplash.com/photo-1576765607924-bf3d1c3c9b45",
+        "https://images.unsplash.com/photo-1505751172876-fa1923c5c528",
+      ],
     },
+
     {
       id: "2",
       title: "Education Awareness Drive",
@@ -36,23 +46,40 @@ export default function EventDetails() {
       image:
         "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop",
       description:
-        "This program promotes the importance of education among rural children. Activities include motivational sessions, career guidance, book distribution, and interactive workshops.",
+        "This program promotes the importance of education among rural children through workshops, mentorship, and book distribution.",
       impact:
-        "180+ students will benefit through educational kits and mentorship guidance.",
+        "180+ students benefited through educational kits and career guidance.",
+
+      gallery: [
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7",
+        "https://images.unsplash.com/photo-1588072432836-e10032774350",
+        "https://images.unsplash.com/photo-1596495577886-d920f1fb7238",
+        "https://images.unsplash.com/photo-1600195077075-7c815f540a3d",
+        "https://images.unsplash.com/photo-1513258496099-48168024aec0",
+      ],
     },
-    {
+     {
       id: "3",
-      title: "Food Donation Program",
-      date: "May 20, 2026",
+      title: "Education Awareness Drive",
+      date: "April 05, 2026",
       location: "Hyderabad",
-      participants: "500+ Beneficiaries",
+      participants: "1500+ Beneficiaries",
       image:
         "https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=80&w=1600&auto=format&fit=crop",
       description:
-        "Our Food Donation Program distributes fresh and nutritious meals to homeless individuals and low‑income families. Volunteers prepare and serve food with dignity and care.",
+        "This program promotes the importance of education among rural children through workshops, mentorship, and book distribution.",
       impact:
-        "500+ people will receive meals and ration support through this initiative.",
+        "180+ students benefited through educational kits and career guidance.",
+
+      gallery: [
+        "https://images.unsplash.com/photo-1509062522246-3755977927d7",
+        "https://images.unsplash.com/photo-1588072432836-e10032774350",
+        "https://images.unsplash.com/photo-1596495577886-d920f1fb7238",
+        "https://images.unsplash.com/photo-1600195077075-7c815f540a3d",
+        "https://images.unsplash.com/photo-1513258496099-48168024aec0",
+      ],
     },
+      
   ];
 
   const event = events.find((e) => e.id === id);
@@ -85,16 +112,16 @@ export default function EventDetails() {
           <h1 className="text-3xl md:text-5xl font-bold mb-4">
             {event.title}
           </h1>
+
           <p className="text-white/90">
             Be a part of this impactful initiative and help us bring positive
             change to society.
           </p>
 
-           <button className="w-1/4 mx-auto mt-4 bg-[#F4CE50] text-[#254151] py-2 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition flex items-center justify-center gap-2">
-              <FontAwesomeIcon icon={faHandHoldingHeart} />
-              Donate Now
-            </button>
-          
+          <button className="mt-5 bg-[#F4CE50] text-[#254151] px-6 py-2 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition flex items-center gap-2 mx-auto">
+            <FontAwesomeIcon icon={faHandHoldingHeart} />
+            Donate Now
+          </button>
         </motion.div>
       </section>
 
@@ -102,74 +129,100 @@ export default function EventDetails() {
       <section className="py-12 px-6 md:px-20 max-w-6xl mx-auto grid lg:grid-cols-3 gap-10">
         {/* LEFT */}
         <div className="lg:col-span-2 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-white p-6 rounded-2xl shadow"
-          >
+          {/* ABOUT */}
+          <div className="bg-white p-6 rounded-2xl shadow">
             <h2 className="text-2xl font-bold mb-3 text-[#254151]">
               About This Event
             </h2>
             <p className="text-gray-700 leading-relaxed">
               {event.description}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-white p-6 rounded-2xl shadow"
-          >
+          {/* IMPACT */}
+          <div className="bg-white p-6 rounded-2xl shadow">
             <h2 className="text-2xl font-bold mb-3 text-[#254151]">
               Event Impact
             </h2>
             <p className="text-gray-700 leading-relaxed">
               {event.impact}
             </p>
-          </motion.div>
+          </div>
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white p-4 rounded-2xl shadow space-y-5 h-fit"
-        >
+        <div className="bg-white p-4 rounded-2xl shadow space-y-5 h-fit">
           <h3 className="text-xl font-bold text-[#254151]">
             Event Information
           </h3>
 
           <div className="flex items-center gap-3 text-gray-700">
-            <FontAwesomeIcon icon={faCalendarDays} /> {event.date}
+            <FontAwesomeIcon icon={faCalendarDays} />
+            {event.date}
           </div>
 
           <div className="flex items-center gap-3 text-gray-700">
-            <FontAwesomeIcon icon={faLocationDot} /> {event.location}
+            <FontAwesomeIcon icon={faLocationDot} />
+            {event.location}
           </div>
 
           <div className="flex items-center gap-3 text-gray-700">
-            <FontAwesomeIcon icon={faUsers} /> {event.participants}
+            <FontAwesomeIcon icon={faUsers} />
+            {event.participants}
           </div>
 
-          {/* ===== DONATE BUTTON ===== */}
-          {/* <Link to="/donate"> */}
-            <button className="w-full bg-[#F4CE50] text-[#254151] py-2 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition flex items-center justify-center gap-2">
-              <FontAwesomeIcon icon={faHandHoldingHeart} />
-              Donate Now
-            </button>
-          {/* </Link> */}
+          <button className="w-full bg-[#F4CE50] text-[#254151] py-2 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition flex items-center justify-center gap-2">
+            <FontAwesomeIcon icon={faHandHoldingHeart} />
+            Donate Now
+          </button>
 
-          {/* BACK BUTTON */}
           <Link to="/events">
             <button className="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition flex items-center justify-center gap-2">
               <FontAwesomeIcon icon={faArrowLeft} />
               Back to Events
             </button>
           </Link>
-        </motion.div>
+        </div>
+      </section>
+
+      {/* ===== SEPARATE FULL WIDTH PROGRAM HIGHLIGHTS ===== */}
+      <section className="py-16 bg-white overflow-hidden">
+        {/* HEADING CENTER */}
+        <div className="text-center mb-12 px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#254151]">
+            Program Highlights
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Glimpses from our previous impactful initiatives
+          </p>
+        </div>
+
+        {/* SCROLL GALLERY FULL WIDTH */}
+        <div className="relative w-full overflow-hidden">
+          <motion.div
+            className="flex gap-6 px-6"
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{
+              repeat: Infinity,
+              duration: 20,
+              ease: "linear",
+            }}
+            whileHover={{ animationPlayState: "paused" }}
+          >
+            {[...event.gallery, ...event.gallery].map((img, index) => (
+              <div
+                key={index}
+                className="min-w-[280px] h-[190px] md:min-w-[360px] md:h-[240px] rounded-2xl overflow-hidden shadow-xl"
+              >
+                <img
+                  src={`${img}?q=80&w=1200&auto=format&fit=crop`}
+                  alt="highlight"
+                  className="w-full h-full object-cover hover:scale-110 transition duration-500"
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </section>
     </div>
   );

@@ -12,6 +12,9 @@ import ContactUs from './pages/ContactUs';
 import DonationPage from './pages/DonationPage';
 import VolunteerPage from './pages/Volunteer';
 import EventDetails from "./pages/EventDetails";
+import Login from './pages/login';
+import RegisterPage from './pages/register';
+import NGOAdminDashboard from './admin/dashboard';
 
 
 function App() {
@@ -30,6 +33,9 @@ function App() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/donation" element={<DonationPage />} />
         <Route path="/volunteer" element={<VolunteerPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin-dashboard" element={<NGOAdminDashboard />} />
       </Routes>
       <Footer />
       

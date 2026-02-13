@@ -236,9 +236,15 @@ export default function AdminVolunteersPage() {
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                  <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                  onClick={() => {
+                          setSelectedVolunteer(v);
+                          setShowViewModal(true);
+                        }}>
                     <FontAwesomeIcon icon={faEye} className="mr-2" /> View
                   </button>
+
+                
 
                   <button
                     onClick={() => handleDelete(v.id)}

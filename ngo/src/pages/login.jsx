@@ -8,6 +8,7 @@ import {
   faEyeSlash,
   faHandHoldingHeart,
 } from "@fortawesome/free-solid-svg-icons";
+import {NavLink} from "react-router-dom"
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -211,12 +212,12 @@ const handleSubmit = async (e) => {
             {/* FOOTER */}
             <p className="text-sm text-gray-500 text-center mt-8">
               Don’t have an account?
-              <a
-                href="/register"
+              <NavLink
+                to="/register"
                 className="text-[#254151] font-semibold hover:underline ml-1"
               >
                 Register
-              </a>
+              </NavLink>
             </p>
           </div>
         </motion.div>

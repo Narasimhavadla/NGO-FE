@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import './App.css'
 import { Routes,Route } from "react-router-dom";
+ import { ToastContainer, toast } from 'react-toastify';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <div>
+      <ToastContainer />
 
      
      <Navbar />

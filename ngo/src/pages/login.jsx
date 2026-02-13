@@ -9,13 +9,27 @@ import {
   faHandHoldingHeart,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+
+
 export default function NGOLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
     remember: false,
   });
+
+  const navigate = useNavigate();
+
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+
+const api = import.meta.env.VITE_API_BASE_URL ;;
+
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -25,10 +39,36 @@ export default function NGOLoginPage() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Login Data:", formData);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await axios.post(
+      `${api}/login`,
+      {
+        username: formData.username,   // using username as username
+        password: formData.password,
+      }
+    );
+
+    // ✅ Save token
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+
+    // ✅ Navigate to dashboard
+    navigate("/admin-dashboard");
+
+  } catch (err) {
+    setError(
+      err.response?.data?.message || "Login failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-[#254151] via-[#1f3441] to-[#0f2027] p-4">
@@ -81,10 +121,10 @@ export default function NGOLoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
 
-              {/* EMAIL */}
+              {/* username */}
               <div>
                 <label className="text-sm font-semibold text-gray-600">
-                  Email Address
+                  Username
                 </label>
                 <div className="mt-2 flex items-center border rounded-xl px-3 py-2 focus-within:ring-2 ring-[#254151]">
                   <FontAwesomeIcon
@@ -92,12 +132,12 @@ export default function NGOLoginPage() {
                     className="text-gray-400 mr-2"
                   />
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="username"
+                    value={formData.username}
                     onChange={handleChange}
                     required
-                    placeholder="Enter your email"
+                    placeholder="Enter your username"
                     className="w-full outline-none bg-transparent"
                   />
                 </div>
@@ -160,10 +200,12 @@ export default function NGOLoginPage() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 type="submit"
+                disabled={loading}
                 className="w-full bg-[#254151] text-white py-3 rounded-xl font-semibold shadow-lg hover:bg-[#1f3441] transition"
               >
-                Login
+                {loading ? "Logging in..." : "Login"}
               </motion.button>
+
             </form>
 
             {/* FOOTER */}
@@ -179,6 +221,7 @@ export default function NGOLoginPage() {
           </div>
         </motion.div>
       </div>
+
     </div>
   );
 }

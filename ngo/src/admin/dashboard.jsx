@@ -136,8 +136,8 @@ export default function NGOAdminDashboard() {
     fixed lg:static top-0 left-0 h-full z-50
     bg-[#254151] text-white
     transition-all duration-300
-    ${sidebarOpen ? "w-64" : "w-0 lg:w-20"}
-    overflow-hidden flex flex-col
+    ${sidebarOpen ? "w-64" : "w-0 lg:w-20 !h-[100vh]"}
+    overflow-hidden flex flex-col 
   `}
 >
   {/* LOGO */}
@@ -146,7 +146,7 @@ export default function NGOAdminDashboard() {
   </div>
 
   {/* MENU */}
-  <div className="flex-1 p-4 space-y-2">
+  <div className={`flex-1 space-y-2 p-4`}>
     {menuItems.map((item, index) => (
       <div
         key={index}
@@ -164,15 +164,16 @@ export default function NGOAdminDashboard() {
         {sidebarOpen && <span>{item.name}</span>}
       </div>
     ))}
-  </div>
-
-  {/* LOGOUT */}
-  <div className="p-4 border-t border-white/20 mt-6">
-    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 cursor-pointer transition">
+    {/* LOGOUT */}
+  <div className="p-4 border-t border-white/20 mt-10">
+    <div className={`flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 cursor-pointer transition `}>
       <FontAwesomeIcon icon={faRightFromBracket} />
       {sidebarOpen && <span>Logout</span>}
     </div>
   </div>
+  </div>
+
+  
 </div>
 
 

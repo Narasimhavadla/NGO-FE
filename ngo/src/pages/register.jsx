@@ -10,10 +10,21 @@ import {
   faPhone,
   faHandHoldingHeart,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
+
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+const [success, setSuccess] = useState("");
+
+const api = import.meta.env.VITE_API_BASE_URL ;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -27,11 +38,41 @@ export default function RegisterPage() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Register Data:", formData);
-  };
+  setLoading(true);
+  setError("");
+  setSuccess("");
+
+  try {
+    const res = await axios.post(
+      `${api}/register`,
+      {
+        username: formData.name,
+        phone: formData.phone,
+        password: formData.password,
+        role: "user", // ✅ default role
+      }
+    );
+
+    setSuccess("Registration successful 🎉");
+
+    // Redirect to login after 1.5 sec
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
+
+  } catch (err) {
+    setError(
+      err.response?.data?.message ||
+        "Registration failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-[80vh] flex  items-center justify-center drop-shadow-lg p-4">
@@ -171,13 +212,15 @@ export default function RegisterPage() {
 
               {/* REGISTER BUTTON */}
               <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                type="submit"
-                className="w-full bg-[#254151] text-white py-3 rounded-xl font-semibold shadow-lg hover:bg-[#1f3441] transition"
-              >
-                Register
-              </motion.button>
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#254151] text-white py-3 rounded-xl font-semibold shadow-lg hover:bg-[#1f3441] transition"
+                >
+                  {loading ? "Registering..." : "Register"}
+                </motion.button>
+
             </form>
 
             {/* FOOTER */}
@@ -218,9 +261,10 @@ export default function RegisterPage() {
             </div>
           </div>
         </motion.div>
-
         
       </div>
+
+
     </div>
   );
 }

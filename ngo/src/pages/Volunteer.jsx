@@ -9,6 +9,7 @@ import {
   faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
+import VolunteerForm from "../components/VolunteerForm";
 
 export default function VolunteerPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -103,134 +104,12 @@ export default function VolunteerPage() {
         </div>
       </div>
 
-      {/* APPLICATION MODAL */}
-      <AnimatePresence>
-        {openModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-8 relative max-h-[90vh] overflow-y-auto"
-            >
-              <button
-                onClick={() => setOpenModal(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-black"
-              >
-                <FontAwesomeIcon icon={faTimes} size="lg" />
-              </button>
+     <VolunteerForm
+      open={openModal}
+      closeModal={() => setOpenModal(false)}
+    />
 
-              <h2 className="text-2xl font-bold mb-6 text-center">
-                Volunteer Application Form
-              </h2>
 
-              {/* FORM */}
-              <form
-                onSubmit={handleSubmit}
-                className="grid md:grid-cols-2 gap-4"
-              >
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  required
-                  className="border p-3 rounded-lg w-full"
-                />
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  required
-                  className="border p-3 rounded-lg w-full"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone Number"
-                  required
-                  className="border p-3 rounded-lg w-full"
-                />
-                <input
-                  type="text"
-                  placeholder="City"
-                  className="border p-3 rounded-lg w-full"
-                />
-
-                <select className="border p-3 rounded-lg w-full md:col-span-2">
-                  <option>Select Volunteer Role</option>
-                  <option>Teaching</option>
-                  <option>Event Management</option>
-                  <option>Fundraising</option>
-                  <option>Field Work</option>
-                </select>
-
-                <textarea
-                  placeholder="Why do you want to volunteer?"
-                  rows={4}
-                  className="border p-3 rounded-lg w-full md:col-span-2"
-                />
-
-                <button
-                  type="submit"
-                  className="md:col-span-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 rounded-lg mt-2"
-                >
-                  Submit Application
-                </button>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* SUCCESS MODAL */}
-      <AnimatePresence>
-        {successModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
-          >
-            <motion.div
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.7, opacity: 0 }}
-              className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center relative"
-            >
-              <button
-                onClick={() => setSuccessModal(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-black"
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-
-              <FontAwesomeIcon
-                icon={faCircleCheck}
-                className="text-green-500 text-5xl mb-4"
-              />
-
-              <h3 className="text-2xl font-bold mb-2">
-                Application Submitted!
-              </h3>
-
-              <p className="text-gray-600 mb-6">
-                Thank you for volunteering ❤️ <br />
-                Our team will contact you soon with further details.
-              </p>
-
-              <button
-                onClick={() => setSuccessModal(false)}
-                className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2 rounded-lg"
-              >
-                Close
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

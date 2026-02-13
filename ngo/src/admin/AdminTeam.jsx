@@ -5,37 +5,24 @@ import {
   faPlus,
   faEye,
   faTrash,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminOurTeam() {
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
 
-  // Dummy Team Data
+  // Dummy API Data (Replace with backend later)
   const [team, setTeam] = useState([
     {
       id: 1,
-      name: "Ramesh Kumar",
+      name: "Krishna",
       designation: "Founder",
-      email: "ramesh@gmail.com",
-      joined: "2023-01-10",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Sneha Reddy",
-      designation: "Program Manager",
-      email: "sneha@gmail.com",
-      joined: "2023-06-22",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "John David",
-      designation: "Volunteer Coordinator",
-      email: "john@gmail.com",
-      joined: "2024-02-15",
-      status: "Pending",
+      email: "krishna@gmail.com",
+      phone: "6300157188",
+      image: "promotions1.webp",
+      joined: "2026-02-13",
     },
   ]);
 
@@ -58,7 +45,6 @@ export default function AdminOurTeam() {
         id: Date.now(),
         ...newMember,
         joined: new Date().toISOString().split("T")[0],
-        status: "Active",
       },
     ]);
 
@@ -147,7 +133,7 @@ export default function AdminOurTeam() {
         </div>
       )}
 
-      {/* TEAM TABLE */}
+      {/* TEAM TABLE - DESKTOP */
       <div className="bg-white shadow-lg rounded-2xl overflow-x-auto hidden md:block">
         <table className="w-full text-left">
           <thead>
@@ -155,8 +141,7 @@ export default function AdminOurTeam() {
               <th className="p-3">Name</th>
               <th className="p-3">Designation</th>
               <th className="p-3">Email</th>
-              <th className="p-3">Joined</th>
-              {/* <th className="p-3">Status</th> */}
+              <th className="p-3">Phone</th>
               <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
@@ -166,22 +151,14 @@ export default function AdminOurTeam() {
               <tr key={m.id} className="border-b hover:bg-gray-50 text-sm">
                 <td className="p-3 font-medium">{m.name}</td>
                 <td className="p-3">{m.designation}</td>
-                <td className="p-3">{m.email}</td>
-                <td className="p-3">{m.joined}</td>
-                {/* <td className="p-3">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      m.status === "Active"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-yellow-100 text-yellow-600"
-                    }`}
-                  >
-                    {m.status}
-                  </span>
-                </td> */}
+                <td className="p-3 break-all">{m.email}</td>
+                <td className="p-3">{m.phone}</td>
 
                 <td className="p-3 text-center space-x-2">
-                  <button className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                  <button
+                    onClick={() => setSelectedMember(m)}
+                    className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  >
                     <FontAwesomeIcon icon={faEye} />
                   </button>
 
@@ -198,23 +175,47 @@ export default function AdminOurTeam() {
         </table>
       </div>
 
-      {/* MOBILE CARDS */}
+          } 
       <div className="grid gap-4 md:hidden">
         {filteredTeam.map((m) => (
-          <div key={m.id} className="bg-white p-4 rounded-xl shadow">
-            <h2 className="font-bold text-[#254151]">{m.name}</h2>
-            <p className="text-sm text-gray-500">{m.designation}</p>
-            <p className="text-sm">{m.email}</p>
-            <p className="text-xs text-gray-400">Joined: {m.joined}</p>
+          <div key={m.id} className="bg-white p-4 rounded-xl shadow border">
+            <div className="flex items-center gap-3">
+              <img
+                src={`http://localhost:3000/api/v1/uploads/${m.image}`}
+                alt={m.name}
+                className="w-14 h-14 rounded-full object-cover border-2 border-[#254151]"
+              />
 
-            <div className="flex gap-2 mt-3">
-              <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg">
+              <div className="flex-1 min-w-0">
+                <h2 className="font-bold text-[#254151] truncate">
+                  {m.name}
+                </h2>
+                <p className="text-sm text-gray-500 truncate">
+                  {m.designation}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 text-sm space-y-1">
+              <p className="break-all">
+                <span className="font-semibold">Email:</span> {m.email}
+              </p>
+              <p>
+                <span className="font-semibold">Phone:</span> {m.phone}
+              </p>
+            </div>
+
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setSelectedMember(m)}
+                className="flex-1 bg-blue-600 text-white py-2 rounded-lg flex items-center justify-center gap-2"
+              >
                 <FontAwesomeIcon icon={faEye} /> View
               </button>
 
               <button
                 onClick={() => deleteMember(m.id)}
-                className="flex-1 bg-red-600 text-white py-2 rounded-lg"
+                className="flex-1 bg-red-600 text-white py-2 rounded-lg flex items-center justify-center gap-2"
               >
                 <FontAwesomeIcon icon={faTrash} /> Delete
               </button>
@@ -222,6 +223,46 @@ export default function AdminOurTeam() {
           </div>
         ))}
       </div>
+      {selectedMember && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative animate-fadeIn">
+            <button
+              onClick={() => setSelectedMember(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+
+            <div className="flex flex-col items-center text-center">
+              <img
+                src={`http://localhost:3000/api/v1/uploads/${selectedMember.image}`}
+                alt={selectedMember.name}
+                className="w-32 h-32 object-cover rounded-full border-4 border-[#254151] shadow-md mb-4"
+              />
+
+              <h2 className="text-xl font-bold text-[#254151]">
+                {selectedMember.name}
+              </h2>
+
+              <p className="text-gray-500 mb-2">
+                {selectedMember.designation}
+              </p>
+
+              <div className="w-full text-sm space-y-1 mt-3">
+                <p>
+                  <span className="font-semibold">Email:</span>{" "}
+                  {selectedMember.email}
+                </p>
+
+                <p>
+                  <span className="font-semibold">Phone:</span>{" "}
+                  {selectedMember.phone}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDays,
-  faUsers,
   faLocationDot,
   faPlus,
   faEye,
@@ -12,10 +11,21 @@ import {
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import AdminAddEventModal from "../components/AdminAddEventModal";
+import AdminViewEventModal from "../components/AdminViewEventModal";
+import AdminDeleteEventModal from "../components/AdminDeleteEventModal";
+
 
 export default function AdminEventsPage() {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
+  const [showAddEvent, setShowAddEvent] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+const [showViewModal, setShowViewModal] = useState(false);
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+
+
 
   // ✅ STATUS FILTER
   const [statusFilter, setStatusFilter] = useState("all");
@@ -121,10 +131,14 @@ export default function AdminEventsPage() {
             }
           />
 
-          <button className="bg-[#254151] text-white px-4 py-2 rounded-lg hover:bg-[#1b2f3a] flex items-center gap-2">
-            <FontAwesomeIcon icon={faPlus} />
-            Add Event
-          </button>
+         <button
+          onClick={() => setShowAddEvent(true)}
+          className="bg-[#254151] text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        >
+          <FontAwesomeIcon icon={faPlus} />
+          Add Event
+        </button>
+
 
           <button
             onClick={exportToExcel}
@@ -262,17 +276,28 @@ export default function AdminEventsPage() {
                 </td>
 
                 <td className="p-2 text-center space-x-2">
-                  <button className="bg-blue-600 text-white px-3 py-1 rounded">
+                  <button
+                    onClick={() => {
+                      setSelectedEvent(event);
+                      setShowViewModal(true);
+                    }}
+                    className="bg-blue-600 text-white px-3 py-1 rounded"
+                  >
                     <FontAwesomeIcon
                       icon={faEye}
                     />
                   </button>
 
-                  <button className="bg-red-600 text-white px-3 py-1 rounded">
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                    />
+                  <button
+                    onClick={() => {
+                      setSelectedEvent(event);
+                      setShowDeleteModal(true);
+                    }}
+                    className="bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
+
                 </td>
               </tr>
             ))}
@@ -280,31 +305,69 @@ export default function AdminEventsPage() {
         </table>
       </div>
 
-      {/* MOBILE */}
-      <div className="grid gap-4 lg:hidden">
-        {currentRecords.map((event) => (
-          <div
-            key={event.id}
-            className="bg-white shadow rounded-2xl p-4"
-          >
-            <h2 className="font-bold">
-              {event.title}
-            </h2>
+     {/* MOBILE */}
+<div className="grid gap-4 lg:hidden">
+  {currentRecords.map((event) => (
+    <div
+      key={event.id}
+      className="bg-white shadow-md rounded-2xl p-4 space-y-3"
+    >
+      {/* TITLE */}
+      <h2 className="font-bold text-lg text-[#254151]">
+        {event.title}
+      </h2>
 
-            <p>
-              {new Date(
-                event.dateOfEvent
-              ).toLocaleDateString()}
-            </p>
-
-            <p>{event.location}</p>
-
-            <p>
-              {event.participants} Participants
-            </p>
-          </div>
-        ))}
+      {/* DATE */}
+      <div className="flex items-center gap-2 text-sm text-gray-600">
+        <FontAwesomeIcon icon={faCalendarDays} />
+        {new Date(event.dateOfEvent).toLocaleDateString()}
       </div>
+
+      {/* LOCATION */}
+      <div className="flex items-center gap-2 text-sm text-gray-600">
+        <FontAwesomeIcon icon={faLocationDot} />
+        {event.location}
+      </div>
+
+      {/* PARTICIPANTS */}
+      <p className="text-sm text-gray-500">
+        {event.participants} Participants
+      </p>
+
+      {/* STATUS */}
+      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">
+        {event.status || "Upcoming"}
+      </span>
+
+      {/* ✅ ACTION BUTTONS */}
+      <div className="flex justify-end gap-3 pt-2 border-t">
+        {/* VIEW */}
+        <button
+          onClick={() => {
+            setSelectedEvent(event);
+            setShowViewModal(true);
+          }}
+          className="bg-blue-600 text-white px-3 py-2 rounded-lg"
+        >
+          <FontAwesomeIcon icon={faEye} />
+        </button>
+
+        {/* DELETE */}
+        <button
+          onClick={() => {
+            setSelectedEvent(event);
+            setShowDeleteModal(true);
+          }}
+          className="bg-red-600 text-white px-3 py-2 rounded-lg"
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </button>
+
+      </div>
+    </div>
+  ))}
+</div>
+
 
       {/* PAGINATION */}
       <div className="flex justify-center gap-2 mt-6 flex-wrap">
@@ -346,6 +409,29 @@ export default function AdminEventsPage() {
           Next
         </button>
       </div>
+
+              <AdminAddEventModal
+                open={showAddEvent}
+                onClose={() => setShowAddEvent(false)}
+                refreshEvents={fetchEvents}
+              />
+
+
+                <AdminViewEventModal
+                open={showViewModal}
+                onClose={() => setShowViewModal(false)}
+                eventData={selectedEvent}
+                refreshEvents={fetchEvents}
+              />
+
+              <AdminDeleteEventModal
+                open={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                eventData={selectedEvent}
+                refreshEvents={fetchEvents}
+              />
+
+
     </div>
   );
 }

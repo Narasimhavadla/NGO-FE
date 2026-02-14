@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHandHoldingHeart,
   faUsers,
-  faEye,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import AddDonationModal from "../components/AdminAddDonation";
 
@@ -73,7 +71,7 @@ export default function AdminDonationsPage() {
       Phone: item.donorPhone,
       Amount: item.amount,
       Status: item.payment_status,
-      DonationFor : item.DonationFor,
+      DonationFor : item.donationFor,
       Method : item.payment_method,
       Date: new Date(item.createdAt).toLocaleDateString(),
     }));

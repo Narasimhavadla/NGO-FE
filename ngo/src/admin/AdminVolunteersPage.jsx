@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DeleteVolunteerModal from "../components/AdminVolDelModal";
 import ViewVolunteerModal from "../components/AdminViewVolunteerModal";
+import AdminAddVolunteer from "../components/AdminAddVolunteer";
 
 export default function AdminVolunteersPage() {
   const [search, setSearch] = useState("");
@@ -23,7 +24,7 @@ export default function AdminVolunteersPage() {
   const [selectedVolunteer, setSelectedVolunteer] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
 
-  const [volunteer,setVolunteer] = useState(null);
+  const [showAddVolunteer,setShowAddVolunteer] = useState(false);
 
   const api = import.meta.env.VITE_API_BASE_URL;
 
@@ -44,7 +45,7 @@ export default function AdminVolunteersPage() {
   }, []);
 
   // ✅ DELETE VOLUNTEER
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     setShowDeleteModal(true);
 
   };
@@ -76,7 +77,9 @@ export default function AdminVolunteersPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
 
-          <button className="bg-[#254151] text-white px-4 py-2 rounded-lg hover:bg-[#1b2f3a] transition whitespace-nowrap">
+          <button className="bg-[#254151] text-white px-4 py-2 rounded-lg hover:bg-[#1b2f3a] transition whitespace-nowrap" 
+            onClick={() => setShowAddVolunteer(true)}
+          >
             <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
             Add Volunteer
           </button>
@@ -277,6 +280,15 @@ export default function AdminVolunteersPage() {
         volunteer={selectedVolunteer}
         refreshVolunteers={fetchVolunteers}
       />)}
+
+
+     {showAddVolunteer && (
+        <AdminAddVolunteer
+          close={() => setShowAddVolunteer(false)}
+          refreshVolunteers={fetchVolunteers}
+        />
+      )}
+
 
     </div>
   );

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import './App.css'
 import { Routes,Route } from "react-router-dom";
  import { ToastContainer, toast } from 'react-toastify';
+ import ProtectedRoutes from './components/protectedRoutes';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
@@ -37,7 +38,10 @@ function App() {
         <Route path="/volunteer" element={<VolunteerPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/admin-dashboard" element={<NGOAdminDashboard />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/admin-dashboard" element={<NGOAdminDashboard />} />
+        </Route>
+        {/* <Route path="/admin-dashboard" element={<NGOAdminDashboard />} /> */}
       </Routes>
       <Footer />
       

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarDays,
@@ -7,42 +7,100 @@ import {
   faPlus,
   faEye,
   faTrash,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export default function AdminEventsPage() {
   const [search, setSearch] = useState("");
+  const [data, setData] = useState([]);
 
-  // Dummy Events Data
-  const events = [
-    {
-      id: 1,
-      title: "Food Donation Camp",
-      date: "2026-03-10",
-      location: "Hyderabad",
-      volunteers: 45,
-      status: "Upcoming",
-    },
-    {
-      id: 2,
-      title: "Blood Donation Drive",
-      date: "2026-02-20",
-      location: "Bangalore",
-      volunteers: 60,
-      status: "Completed",
-    },
-    {
-      id: 3,
-      title: "Clothes Distribution",
-      date: "2026-03-05",
-      location: "Chennai",
-      volunteers: 30,
-      status: "Upcoming",
-    },
-  ];
+  // ✅ STATUS FILTER
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const filteredEvents = events.filter((event) =>
-    event.title.toLowerCase().includes(search.toLowerCase())
+  // ✅ PAGINATION
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+
+  const api = import.meta.env.VITE_API_BASE_URL;
+
+  // ✅ FETCH EVENTS
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get(`${api}/events`);
+      setData(res.data.data || []);
+    } catch (err) {
+      console.log(err);
+      setData([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  // ✅ SEARCH FILTER
+  let filteredEvents = data.filter((event) =>
+    event.title?.toLowerCase().includes(search.toLowerCase())
   );
+
+  // ✅ STATUS FILTER LOGIC
+  if (statusFilter !== "all") {
+    filteredEvents = filteredEvents.filter(
+      (event) =>
+        event.status?.toLowerCase() === statusFilter
+    );
+  }
+
+  // ✅ PAGINATION LOGIC
+  const indexOfLast = currentPage * recordsPerPage;
+  const indexOfFirst = indexOfLast - recordsPerPage;
+
+  const currentRecords = filteredEvents.slice(
+    indexOfFirst,
+    indexOfLast
+  );
+
+  const totalPages = Math.ceil(
+    filteredEvents.length / recordsPerPage
+  );
+
+  // ✅ EXCEL EXPORT (ALL RECORDS)
+  const exportToExcel = () => {
+    const excelData = data.map((event) => ({
+      Title: event.title,
+      Date: new Date(
+        event.dateOfEvent
+      ).toLocaleDateString(),
+      Location: event.location,
+      Time : event.time,
+      Participants: event.participants,
+      Status: event.status || "Upcoming",
+    }));
+
+    const worksheet =
+      XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Events"
+    );
+
+    const buffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const file = new Blob([buffer], {
+      type: "application/octet-stream",
+    });
+
+    saveAs(file, "All_Events.xlsx");
+  };
 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
@@ -58,22 +116,36 @@ export default function AdminEventsPage() {
             placeholder="Search events..."
             className="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-[#254151]"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
           />
 
-          <button className="bg-[#254151] text-white px-4 py-2 rounded-lg hover:bg-[#1b2f3a] transition flex items-center justify-center gap-2">
+          <button className="bg-[#254151] text-white px-4 py-2 rounded-lg hover:bg-[#1b2f3a] flex items-center gap-2">
             <FontAwesomeIcon icon={faPlus} />
             Add Event
+          </button>
+
+          <button
+            onClick={exportToExcel}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+          >
+            Export Excel
           </button>
         </div>
       </div>
 
+      {/* ✅ STATUS FILTER BUTTONS */}
+      
+
       {/* STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between">
+        <div className="bg-white shadow rounded-2xl p-5 flex justify-between">
           <div>
-            <p className="text-gray-500 text-sm">Total Events</p>
-            <h2 className="text-2xl font-bold">12</h2>
+            <p>Total Events</p>
+            <h2 className="text-2xl font-bold">
+              {data.length}
+            </h2>
           </div>
           <FontAwesomeIcon
             icon={faCalendarDays}
@@ -81,73 +153,125 @@ export default function AdminEventsPage() {
           />
         </div>
 
-        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between">
+        <div className="bg-white shadow rounded-2xl p-5 flex justify-between">
           <div>
-            <p className="text-gray-500 text-sm">Upcoming</p>
-            <h2 className="text-2xl font-bold">7</h2>
+            <p>Completed</p>
+            <h2 className="text-2xl font-bold">
+              {
+                data.filter(
+                  (e) =>
+                    e.status?.toLowerCase() ===
+                    "completed"
+                ).length
+              }
+            </h2>
           </div>
           <FontAwesomeIcon
-            icon={faLocationDot}
-            className="text-3xl text-[#F4CE50]"
+            icon={faCheckCircle}
+            className="text-3xl text-green-500 "
           />
         </div>
 
-        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between">
+        <div className="bg-white shadow rounded-2xl p-5 flex justify-between">
           <div>
-            <p className="text-gray-500 text-sm">Volunteers Joined</p>
-            <h2 className="text-2xl font-bold">135</h2>
+            <p>Upcoming</p>
+            <h2 className="text-2xl font-bold">
+              {
+                data.filter(
+                  (e) =>
+                    e.status?.toLowerCase() ===
+                    "upcoming"
+                ).length
+              }
+            </h2>
           </div>
           <FontAwesomeIcon
-            icon={faUsers}
-            className="text-3xl text-[#F4CE50]"
+            icon={faLocationDot}
+            className="text-3xl text-orange-600"
           />
         </div>
       </div>
 
-      {/* DESKTOP TABLE */}
+      <div className="flex gap-3 mb-4 flex-wrap">
+        {[
+          "all",
+          "active",
+          "completed",
+          "upcoming",
+        ].map((status) => (
+          <button
+            key={status}
+            onClick={() => {
+              setStatusFilter(status);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-1 rounded-lg capitalize ${
+              statusFilter === status
+                ? "bg-[#254151] text-white"
+                : "bg-white border"
+            }`}
+          >
+            {status}
+          </button>
+        ))}
+      </div>
+
+      {/* TABLE */}
       <div className="hidden lg:block bg-white shadow-lg rounded-2xl overflow-hidden">
-        <div className="p-6 border-b font-semibold text-gray-700">
+        <div className="p-6 border-b font-semibold">
           All Events
         </div>
 
         <table className="w-full text-left">
-          <thead className="bg-gray-100 text-gray-600 text-sm">
+          <thead className="bg-gray-100 text-sm">
             <tr>
               <th className="p-4">Event</th>
               <th className="p-4">Date</th>
+              <th className="p-4">Time</th>
               <th className="p-4">Location</th>
-              <th className="p-4">Volunteers</th>
               <th className="p-4">Status</th>
-              <th className="p-4 text-center">Actions</th>
+              <th className="p-4 text-center">
+                Actions
+              </th>
             </tr>
           </thead>
 
-          <tbody className="text-sm">
-            {filteredEvents.map((event) => (
-              <tr key={event.id} className="border-t hover:bg-gray-50">
-                <td className="p-4 font-medium">{event.title}</td>
-                <td className="p-4">{event.date}</td>
-                <td className="p-4">{event.location}</td>
-                <td className="p-4">{event.volunteers}</td>
-                <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      event.status === "Completed"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-blue-100 text-blue-600"
-                    }`}
-                  >
-                    {event.status}
+          <tbody>
+            {currentRecords.map((event) => (
+              <tr key={event.id} className="border-t">
+                <td className="p-2  pl-5 font-semibold">
+                  {event.title}
+                </td>
+
+                <td className="p-2">
+                  {new Date(
+                    event.dateOfEvent
+                  ).toDateString()}
+                </td>
+                <td className="p-2">{event.time}</td>
+
+                <td className="p-2">
+                  {event.location}
+                </td>
+
+                <td className="p-2">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs">
+                    {event.status ||
+                      "Upcoming"}
                   </span>
                 </td>
 
-                <td className="p-4 text-center space-x-2">
-                  <button className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700">
-                    <FontAwesomeIcon icon={faEye} />
+                <td className="p-2 text-center space-x-2">
+                  <button className="bg-blue-600 text-white px-3 py-1 rounded">
+                    <FontAwesomeIcon
+                      icon={faEye}
+                    />
                   </button>
 
-                  <button className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700">
-                    <FontAwesomeIcon icon={faTrash} />
+                  <button className="bg-red-600 text-white px-3 py-1 rounded">
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                    />
                   </button>
                 </td>
               </tr>
@@ -156,53 +280,71 @@ export default function AdminEventsPage() {
         </table>
       </div>
 
-      {/* MOBILE CARDS */}
+      {/* MOBILE */}
       <div className="grid gap-4 lg:hidden">
-        {filteredEvents.map((event) => (
+        {currentRecords.map((event) => (
           <div
             key={event.id}
-            className="bg-white shadow rounded-2xl p-4 space-y-3"
+            className="bg-white shadow rounded-2xl p-4"
           >
-            <div className="flex justify-between items-start">
-              <h2 className="font-bold text-[#254151]">{event.title}</h2>
+            <h2 className="font-bold">
+              {event.title}
+            </h2>
 
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  event.status === "Completed"
-                    ? "bg-green-100 text-green-600"
-                    : "bg-blue-100 text-blue-600"
-                }`}
-              >
-                {event.status}
-              </span>
-            </div>
+            <p>
+              {new Date(
+                event.dateOfEvent
+              ).toLocaleDateString()}
+            </p>
 
-            <div className="text-sm text-gray-600 space-y-1">
-              <p>
-                <FontAwesomeIcon icon={faCalendarDays} className="mr-2" />
-                {event.date}
-              </p>
-              <p>
-                <FontAwesomeIcon icon={faLocationDot} className="mr-2" />
-                {event.location}
-              </p>
-              <p>
-                <FontAwesomeIcon icon={faUsers} className="mr-2" />
-                {event.volunteers} Volunteers
-              </p>
-            </div>
+            <p>{event.location}</p>
 
-            <div className="flex gap-2 pt-2">
-              <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-                <FontAwesomeIcon icon={faEye} /> View
-              </button>
-
-              <button className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
-                <FontAwesomeIcon icon={faTrash} /> Delete
-              </button>
-            </div>
+            <p>
+              {event.participants} Participants
+            </p>
           </div>
         ))}
+      </div>
+
+      {/* PAGINATION */}
+      <div className="flex justify-center gap-2 mt-6 flex-wrap">
+        <button
+          onClick={() =>
+            setCurrentPage((p) =>
+              Math.max(p - 1, 1)
+            )
+          }
+          className="px-3 py-1 bg-gray-200 rounded"
+        >
+          Prev
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() =>
+              setCurrentPage(i + 1)
+            }
+            className={`px-3 py-1 rounded ${
+              currentPage === i + 1
+                ? "bg-[#254151] text-white"
+                : "bg-gray-200"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() =>
+            setCurrentPage((p) =>
+              Math.min(p + 1, totalPages)
+            )
+          }
+          className="px-3 py-1 bg-gray-200 rounded"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

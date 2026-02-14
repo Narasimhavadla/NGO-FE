@@ -22,6 +22,7 @@ import { faTeamspeak } from "@fortawesome/free-brands-svg-icons";
 export default function NGOAdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [showLogoutConfirm,setShowLogoutConfirm] = useState(false);
 
   const menuItems = [
     { name: "Dashboard", icon: faChartLine },
@@ -30,9 +31,18 @@ export default function NGOAdminDashboard() {
     { name: "Events", icon: faCalendarDays },
     { name: "Gallery", icon: faPhotoFilm },
     { name: "Team", icon: faHandshake },
+    { name: "Logout", icon: faRightFromBracket },
     // { name: "Beneficiaries", icon: faHandHoldingHeart },
   ];
 
+
+  const handleLogout = () =>{
+
+    setShowLogoutConfirm(true)
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("user");
+    // window.location.href = "/login";
+  }
   /* ---------------- TAB COMPONENTS ---------------- */
 
   const DashboardTab = () => (
@@ -47,11 +57,11 @@ export default function NGOAdminDashboard() {
           },
           { title: "Volunteers", value: "320", icon: faUsers },
           { title: "Events", value: "18", icon: faCalendarDays },
-          {
-            title: "Beneficiaries",
-            value: "1,120",
-            icon: faHandHoldingHeart,
-          },
+          // {
+          //   title: "Beneficiaries",
+          //   value: "1,120",
+          //   icon: faHandHoldingHeart,
+          // },
         ].map((card, i) => (
           <div
             key={i}
@@ -104,6 +114,8 @@ export default function NGOAdminDashboard() {
     </>
   );
 
+ 
+
   /* -------- TAB RENDER FUNCTION -------- */
 
   const renderTab = () => {
@@ -120,23 +132,24 @@ export default function NGOAdminDashboard() {
         return <AdminGalleryPage />;
       case "Team":
         return <AdminOurTeam />;
+      // case "Logout":
+      //   return <AdminOurTeam />;
     //   case "Beneficiaries":
     //     return <AdminBeneficiariesPage />;
       default:
         return <DashboardTab />;
     }
-  };
-
+  }; 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen  bg-gray-100 flex">
       {/* SIDEBAR */}
     {/* SIDEBAR */}
 <div
   className={`
-    fixed lg:static top-0 left-0 h-full z-50
+    fixed lg:static top-0 left-0 z-50
     bg-[#254151] text-white
     transition-all duration-300
-    ${sidebarOpen ? "w-64" : "w-0 lg:w-20 !h-[100vh]"}
+    ${sidebarOpen ? "w-64 h-[100vh]" : "w-0 lg:w-20 !h-[100vh]"}
     overflow-hidden flex flex-col 
   `}
 >
@@ -146,34 +159,42 @@ export default function NGOAdminDashboard() {
   </div>
 
   {/* MENU */}
-  <div className={`flex-1 space-y-2 p-4`}>
-    {menuItems.map((item, index) => (
-      <div
-        key={index}
-        onClick={() => {
-          setActiveTab(item.name);
-          if (window.innerWidth < 1024) setSidebarOpen(false);
-        }}
-        className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition ${
-          activeTab === item.name
-            ? "bg-white/20"
-            : "hover:bg-white/10"
-        }`}
-      >
-        <FontAwesomeIcon icon={item.icon} />
-        {sidebarOpen && <span>{item.name}</span>}
-      </div>
-    ))}
-    {/* LOGOUT */}
-  <div className="p-4 border-t border-white/20 mt-10">
-    <div className={`flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 cursor-pointer transition `}>
-      <FontAwesomeIcon icon={faRightFromBracket} />
-      {sidebarOpen && <span>Logout</span>}
-    </div>
-  </div>
-  </div>
+<div className="flex-1 space-y-2 p-4 ">
+  {menuItems.map((item, index) => (
+    <div
+      key={index}
+      onClick={() => {
 
-  
+        // 👉 If Logout clicked
+        if (item.name === "Logout") {
+          handleLogout();
+
+          // ✅ Close sidebar in mobile view
+          if (window.innerWidth < 1024) {
+            setSidebarOpen(false);
+          }
+
+          return;
+        }
+
+        // 👉 Other menu items
+        setActiveTab(item.name);
+
+        if (window.innerWidth < 1024) {
+          setSidebarOpen(false);
+        }
+      }}
+      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition ${
+        activeTab === item.name
+          ? "bg-white/20"
+          : "hover:bg-white/10"
+      }`}
+    >
+      <FontAwesomeIcon icon={item.icon} />
+      {sidebarOpen && <span>{item.name}</span>}
+    </div>
+  ))}
+</div>
 </div>
 
 
@@ -194,8 +215,27 @@ export default function NGOAdminDashboard() {
         </div>
 
         {/* TAB CONTENT */}
-        <div className="flex-1">{renderTab()}</div>
+        <div className="flex-1 ">{renderTab()}</div>
       </div>
+
+
+      {showLogoutConfirm && (
+        <div className="w-full h-[95vh] bg-black/50 z-index-40 absolute">
+        <div className="flex items-center justify-center h-full">
+          <div className="w-3/5 md:w-1/4 h-52 bg-white rounded-xl mx-auto content-center">
+            <h2 className="text-center mb-8">Are you sure want to Logout ?</h2>
+            <div className="flex items-center justify-center gap-4">
+              <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                Logout
+              </button>
+              <button onClick={() => setShowLogoutConfirm(false)} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
     </div>
   );
 }

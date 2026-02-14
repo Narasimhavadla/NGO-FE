@@ -115,170 +115,195 @@ export default function ViewVolunteerModal({
           exit={{ opacity: 0 }}
         >
           {/* MODAL */}
-          <motion.div
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden h-[84vh] overflow-y-auto mt-18"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-          >
-            {/* HEADER */}
-            <div className="flex justify-between items-center p-2 border-b">
-              <h2 className="text-xl font-semibold text-[#254151] px-4">
-                Volunteer Profile
-              </h2>
+          {/* MODAL */}
+<motion.div
+  className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden mt-18 h-[60vh] md:h-[84vh] overflow-y-auto "
+  initial={{ scale: 0.8, opacity: 0 }}
+  animate={{ scale: 1, opacity: 1 }}
+  exit={{ scale: 0.8, opacity: 0 }}
+>
+  {/* HEADER COVER */}
+  <div className="h-20 bg-gradient-to-r from-[#254151] to-[#3c6e71] relative">
+    <button
+      onClick={onClose}
+      className="absolute top-3 right-3 text-white"
+    >
+      <FontAwesomeIcon icon={faTimes} />
+    </button>
+  </div>
 
-              <button onClick={onClose}>
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            </div>
+  {/* PROFILE IMAGE */}
+  <div className="flex flex-col items-center -mt-12 md:-mt-18 px-6">
+    <div className="relative">
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          className="w-36 md:w-28 h-36 md:h-28 rounded-full object-cover border-4 border-white shadow-lg"
+        />
+      ) : (
+        <div className="w-36 md:w-28 h-36 md:h-28 rounded-full bg-gray-100 flex items-center justify-center border">
+          <FontAwesomeIcon
+            icon={faUser}
+            className="text-4xl text-gray-400"
+          />
+        </div>
+      )}
 
-            {/* BODY */}
-            <div className="p-4 grid md:grid-cols-3 gap-6">
-              {/* IMAGE SECTION */}
-              <div className="flex flex-col items-center">
-                <div className="relative">
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      className="w-40 h-40 rounded-full object-cover border-4 border-gray-200 shadow"
-                    />
-                  ) : (
-                    <div className="w-40 h-40 rounded-full bg-gray-100 flex items-center justify-center border">
-                      <FontAwesomeIcon
-                        icon={faUser}
-                        className="text-5xl text-gray-400"
-                      />
-                    </div>
-                  )}
+      {/* Upload */}
+      {editMode && (
+        <label className="absolute bottom-1 right-1 bg-black/70 text-white p-2 rounded-full cursor-pointer">
+          <FontAwesomeIcon icon={faCamera} />
+          <input
+            type="file"
+            hidden
+            accept="image/*"
+            onChange={(e) =>
+              handleImageChange(e.target.files[0])
+            }
+          />
+        </label>
+      )}
+    </div>
 
-                  {/* Upload Button */}
-                  {editMode && (
-                    <label className="absolute bottom-2 right-2 bg-black/70 text-white p-2 rounded-full cursor-pointer">
-                      <FontAwesomeIcon icon={faCamera} />
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={(e) =>
-                          handleImageChange(e.target.files[0])
-                        }
-                      />
-                    </label>
-                  )}
-                </div>
+    {/* NAME */}
+    <h2 className="mt-1 text-xl font-bold text-gray-800 text-center">
+      {formData.name}
+    </h2>
 
-                <h3 className="mt-4 font-semibold text-lg text-center">
-                  {formData.name}
-                </h3>
+    {/* ROLE */}
+    <p className="text-sm text-gray-500">
+      {formData.role || "Volunteer"}
+    </p>
 
-                <div className="mt-2 w-full">
-                    {!editMode ? (
-                        // ✅ VIEW MODE BADGE
-                        <span
-                        className={`ml-3 px-4 py-1 text-xs rounded-full font-medium 
-                            ${
-                            formData.status === "active"
-                                ? "bg-green-100 text-green-600"
-                                : formData.status === "pending"
-                                ? "bg-yellow-100 text-yellow-600"
-                                : "bg-red-100 text-red-600"
-                            }`}
-                        >
-                        <span className="">{formData.status}</span>
-                        </span>
-                    ) : (
-                        // ✅ EDIT MODE DROPDOWN
-                        <select
-                        value={formData.status}
-                        onChange={(e) =>
-                            setFormData({
-                            ...formData,
-                            status: e.target.value,
-                            })
-                        }
-                        className="w-full border rounded-lg px-3 py-2 mt-1"
-                        >
-                        <option value="active">Active</option>
-                        <option value="pending">Pending</option>
-                        <option value="inactive">Inactive</option>
-                        </select>
-                    )}
-                    </div>
+    {/* STATUS */}
+    {/* STATUS */}
+<div className="mt-1 w-full flex justify-center">
+  {!editMode ? (
+    // ✅ VIEW MODE BADGE
+    <span
+      className={`px-4 py-1 text-xs rounded-full font-medium
+        ${
+          formData.status === "active"
+            ? "bg-green-100 text-green-600"
+            : formData.status === "pending"
+            ? "bg-yellow-100 text-yellow-600"
+            : "bg-red-100 text-red-600"
+        }`}
+    >
+      {formData.status}
+    </span>
+  ) : (
+    // ✅ EDIT MODE DROPDOWN
+    <select
+      value={formData.status}
+      onChange={(e) =>
+        setFormData({
+          ...formData,
+          status: e.target.value,
+        })
+      }
+      className="border rounded-lg px-3 py-1 text-sm"
+    >
+      <option value="active">Active</option>
+      <option value="pending">Pending</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  )}
+</div>
 
-              </div>
+  </div>
 
-              {/* DETAILS */}
-              <div className="md:col-span-2 space-y-2">
-                {[
-                  { label: "Email", key: "email", icon: faEnvelope },
-                  { label: "Phone", key: "phone", icon: faPhone },
-                  { label: "City", key: "city", icon: faCity },
-                  { label: "Role", key: "role", icon: faUserTag },
-                ].map((field) => (
-                  <div key={field.key}>
-                    <label className="text-sm text-gray-500 flex gap-2 items-center">
-                      <FontAwesomeIcon icon={field.icon} />
-                      {field.label}
-                    </label>
-                    <input
-                      disabled={!editMode}
-                      value={formData[field.key]}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          [field.key]: e.target.value,
-                        })
-                      }
-                      className="w-full border rounded-lg px-3 py-1 mt-1"
-                    />
-                  </div>
-                ))}
+  {/* DETAILS */}
+  <div className="p-2 space-y-2">
+    {/* EMAIL */}
+    <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
+      <FontAwesomeIcon icon={faEnvelope} />
+      <input
+        disabled={!editMode}
+        value={formData.email}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            email: e.target.value,
+          })
+        }
+        className="bg-transparent outline-none w-full"
+      />
+    </div>
 
-                
+    {/* PHONE */}
+    <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
+      <FontAwesomeIcon icon={faPhone} />
+      <input
+        disabled={!editMode}
+        value={formData.phone}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            phone: e.target.value,
+          })
+        }
+        className="bg-transparent outline-none w-full"
+      />
+    </div>
 
-                {/* Description */}
-                <div>
-                  <label className="text-sm text-gray-500">
-                    Description
-                  </label>
-                  <textarea
-                    disabled={!editMode}
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        description: e.target.value,
-                      })
-                    }
-                    className="w-full border rounded-lg px-3 py-1 mt-1"
-                    rows={2}
-                  />
-                </div>
-              </div>
-            </div>
+    {/* CITY */}
+    <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
+      <FontAwesomeIcon icon={faCity} />
+      <input
+        disabled={!editMode}
+        value={formData.city}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            city: e.target.value,
+          })
+        }
+        className="bg-transparent outline-none w-full"
+      />
+    </div>
 
-            {/* FOOTER */}
-            <div className="flex justify-end gap-3 p-4 border-t">
-              {!editMode ? (
-                <button
-                  onClick={() => setEditMode(true)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                >
-                  <FontAwesomeIcon icon={faPen} />
-                  Edit
-                </button>
-              ) : (
-                <button
-                  onClick={handleUpdate}
-                  disabled={loading}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
-                >
-                  <FontAwesomeIcon icon={faSave} />
-                  {loading ? "Saving..." : "Save"}
-                </button>
-              )}
-            </div>
-          </motion.div>
+    {/* DESCRIPTION */}
+    <div className="bg-gray-50 p-2 rounded-xl">
+      <textarea
+        disabled={!editMode}
+        value={formData.description}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            description: e.target.value,
+          })
+        }
+        rows={2}
+        placeholder="Volunteer description..."
+        className="bg-transparent outline-none w-full"
+      />
+    </div>
+  </div>
+
+  {/* FOOTER */}
+  <div className="p-4 border-t flex justify-center">
+    {!editMode ? (
+      <button
+        onClick={() => setEditMode(true)}
+        className="px-6 py-1 bg-[#254151] text-white rounded-xl hover:bg-[#1b2f3a] flex items-center gap-2"
+      >
+        <FontAwesomeIcon icon={faPen} />
+        Edit Profile
+      </button>
+    ) : (
+      <button
+        onClick={handleUpdate}
+        disabled={loading}
+        className="px-6 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 flex items-center gap-2"
+      >
+        <FontAwesomeIcon icon={faSave} />
+        {loading ? "Saving..." : "Save Changes"}
+      </button>
+    )}
+  </div>
+</motion.div>
+
         </motion.div>
       )}
     </AnimatePresence>

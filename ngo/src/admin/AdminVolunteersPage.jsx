@@ -57,8 +57,13 @@ export default function AdminVolunteersPage() {
 
   };
 
+const sortedVolunteers = [...volunteers].sort(
+  (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+);
+
+
   // ✅ SEARCH FILTER
-const filteredVolunteers = volunteers.filter((v) => {
+const filteredVolunteers = sortedVolunteers.filter((v) => {
   const matchesSearch =
     v.name?.toLowerCase().includes(search.toLowerCase()) ||
     v.phone?.includes(search);
@@ -176,12 +181,13 @@ useEffect(() => {
             Add Volunteer
           </button>
           <button className="bg-green-400 px-2 py-1 rounded text-white"
-            onClick={exportAllData}>
+          onClick={exportCurrentPage}> 
+
               <FontAwesomeIcon icon={faFileExcel}/>
               Current Page
           </button>
           <button className="bg-green-700 px-2 py-1 rounded text-white"
-          onClick={exportCurrentPage}> 
+            onClick={exportAllData}>
               <FontAwesomeIcon icon={faFileExcel}/>
               All
           </button>

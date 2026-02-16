@@ -37,7 +37,9 @@ export default function ViewVolunteerModal({
     status: "pending",
   });
 
-  // ✅ Load Volunteer Data
+  /**
+   * ✅ Load Volunteer Data
+   */
   useEffect(() => {
     if (volunteer) {
       setFormData({
@@ -54,79 +56,111 @@ export default function ViewVolunteerModal({
     }
   }, [volunteer]);
 
-  // ✅ Image Change
+  /**
+   * ✅ Reset modal state when closed
+   */
+  useEffect(() => {
+    if (!open) {
+      setEditMode(false);
+      setImageFile(null);
+      setPreview(null);
+    }
+  }, [open]);
+
+  /**
+   * ✅ Image Change
+   */
   const handleImageChange = (file) => {
     if (!file) return;
     setImageFile(file);
     setPreview(URL.createObjectURL(file));
   };
 
-  // ✅ Update Volunteer
- const handleUpdate = async () => {
-  try {
-    setLoading(true);
+  /**
+   * ✅ UPDATE HANDLER
+   */
+  const handleUpdate = async () => {
+    try {
+      setLoading(true);
 
-    // Detect status change
-    const statusChanged =
-      formData.status !== volunteer.status;
+      const statusChanged =
+        formData.status !== volunteer.status;
 
-    // If ONLY status changed → call status API
-    if (statusChanged && !imageFile) {
-      await axios.patch(
-        `${api}/volunteer-status/${volunteer.id}`,
-        { status: formData.status }
+      /**
+       * ✅ STATUS UPDATE FLOW
+       */
+      if (statusChanged) {
+        // confirmation before activation
+        if (
+          formData.status === "active" &&
+          !window.confirm(
+            "Activating this volunteer will generate ID Card and send Email. Continue?"
+          )
+        ) {
+          setLoading(false);
+          return;
+        }
+
+        await axios.patch(
+          `${api}/volunteer-status/${volunteer.id}`,
+          { status: formData.status }
+        );
+
+        toast.success(
+          formData.status === "active"
+            ? "✅ Volunteer Activated & Email Sent 📧"
+            : "Status updated successfully"
+        );
+
+        refreshVolunteers();
+        setEditMode(false);
+        onClose();
+        return;
+      }
+
+      /**
+       * ✅ PROFILE / IMAGE UPDATE
+       */
+      const data = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+
+      if (imageFile) {
+        data.append("image", imageFile);
+      }
+
+      await axios.put(
+        `${api}/volunteer/${volunteer.id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
-      toast.success(
-        "Status updated & ID Card sent 📧"
-      );
+      toast.success("Volunteer profile updated ✅");
 
       refreshVolunteers();
       setEditMode(false);
       onClose();
-      return;
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Update failed ❌"
+      );
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Otherwise → normal update (profile/image)
-    const data = new FormData();
-
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    if (imageFile) {
-      data.append("image", imageFile);
-    }
-
-    await axios.put(
-      `${api}/volunteer/${volunteer.id}`,
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    toast.success("Volunteer updated successfully");
-
-    refreshVolunteers();
-    setEditMode(false);
-    onClose();
-  } catch (error) {
-    console.error(error);
-    toast.error("Update failed ❌");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  const imageUrl =
-    preview ||
-    (volunteer?.image
-      ? `${api}/uploads/${volunteer.image}`
-      : null);
+  /**
+   * ✅ Cloudinary Image URL
+   */
+  const imageUrl = preview || volunteer?.image || null;
 
   return (
     <AnimatePresence>
@@ -137,7 +171,6 @@ export default function ViewVolunteerModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* MODAL */}
           <motion.div
             className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden h-[58vh] md:h-[85vh] overflow-y-auto mt-18"
             initial={{ scale: 0.8, opacity: 0 }}
@@ -231,14 +264,17 @@ export default function ViewVolunteerModal({
                   <span
                     className={`px-4 py-1 text-xs rounded-full font-medium ${
                       formData.status === "active"
-                        ? "bg-green-100 text-green-600"
+                        ? "bg-green-100 text-green-700"
+                        : formData.status === "inactive"
+                        ? "bg-red-100 text-red-600"
                         : "bg-yellow-100 text-yellow-600"
                     }`}
                   >
-                    {formData.status}
+                    {formData.status.toUpperCase()}
                   </span>
                 ) : (
                   <select
+                    disabled={!editMode}
                     value={formData.status}
                     onChange={(e) =>
                       setFormData({
@@ -258,8 +294,6 @@ export default function ViewVolunteerModal({
 
             {/* DETAILS */}
             <div className="p-3 space-y-2">
-
-              {/* EMAIL */}
               <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
                 <FontAwesomeIcon icon={faEnvelope} />
                 <input
@@ -275,7 +309,6 @@ export default function ViewVolunteerModal({
                 />
               </div>
 
-              {/* PHONE */}
               <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
                 <FontAwesomeIcon icon={faPhone} />
                 <input
@@ -291,7 +324,6 @@ export default function ViewVolunteerModal({
                 />
               </div>
 
-              {/* CITY */}
               <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
                 <FontAwesomeIcon icon={faCity} />
                 <input
@@ -307,7 +339,6 @@ export default function ViewVolunteerModal({
                 />
               </div>
 
-              {/* DESCRIPTION */}
               <div className="bg-gray-50 p-2 rounded-xl">
                 <textarea
                   disabled={!editMode}
@@ -339,7 +370,11 @@ export default function ViewVolunteerModal({
                 <button
                   onClick={handleUpdate}
                   disabled={loading}
-                  className="px-6 py-1 bg-green-600 text-white rounded-xl hover:bg-green-700 flex items-center gap-2"
+                  className={`px-6 py-1 text-white rounded-xl flex items-center gap-2 ${
+                    loading
+                      ? "bg-gray-400"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
                 >
                   <FontAwesomeIcon icon={faSave} />
                   {loading ? "Saving..." : "Save Changes"}

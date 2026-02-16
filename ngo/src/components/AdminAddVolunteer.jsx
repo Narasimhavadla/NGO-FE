@@ -67,7 +67,7 @@ export default function AdminAddVolunteer({ close, refreshVolunteers }) {
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
 
       {/* MODAL */}
-      <div className="bg-white w-[95%] md:w-[650px] rounded-2xl shadow-xl p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white w-[95%] md:w-[650px] rounded-2xl shadow-xl p-6 h-[70vh] md:h-[85vh] mt-20 overflow-y-auto">
 
         {/* HEADER */}
         <div className="flex justify-between items-center mb-5">
@@ -84,7 +84,7 @@ export default function AdminAddVolunteer({ close, refreshVolunteers }) {
         </div>
 
         {/* FORM */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-2">
 
           {/* NAME */}
           <input

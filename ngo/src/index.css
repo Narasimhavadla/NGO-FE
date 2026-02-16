@@ -5,3 +5,11 @@
   @apply w-full border border-gray-300 rounded-lg px-4 py-2
   focus:outline-none focus:ring-2 focus:ring-[#254151];
 }
+
+
+.input-inline {
+  @apply bg-transparent border border-transparent 
+         focus:border-gray-300 focus:bg-white
+         outline-none rounded px-1 py-[2px]
+         w-full;
+}

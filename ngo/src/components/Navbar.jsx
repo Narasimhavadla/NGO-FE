@@ -80,7 +80,7 @@ export default function Navbar() {
            {/* <NavLink to="/volunteer" className={navLinkClass}>
             Volunteer
           </NavLink> */}
-          <NavLink to="/login" className={navLinkClass}>
+          <NavLink to="/auth" className={navLinkClass}>
             Login
           </NavLink>
         </div>
@@ -165,7 +165,7 @@ export default function Navbar() {
             </NavLink> */}
 
              <NavLink
-              to="/login"
+              to="/auth"
               className={navLinkClass}
               onClick={handleLinkClick}
             >

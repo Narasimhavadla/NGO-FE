@@ -39,11 +39,23 @@ export default function NGOAdminDashboard() {
   const handleLogout = () =>{
 
     setShowLogoutConfirm(true)
+    
     // localStorage.removeItem("token");
     // localStorage.removeItem("user");
     // window.location.href = "/login";
   }
   /* ---------------- TAB COMPONENTS ---------------- */
+
+  const confirmLogout = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      // localStorage.removeItem("rzp_checkout_anon_id");
+      // localStorage.removeItem("rzp_device_id");
+      // localStorage.removeItem("rzp_stored_checkout_id")
+      window.location.href = "/auth";
+
+  }
+
 
   const DashboardTab = () => (
     <>
@@ -92,20 +104,27 @@ export default function NGOAdminDashboard() {
             <thead className="bg-gray-50 text-gray-600 text-sm">
               <tr>
                 <th className="p-4">Donor Name</th>
+                <th className="p-4">Phone</th>
+                <th className="p-4">Email</th>
                 <th className="p-4">Amount</th>
                 <th className="p-4">Date</th>
                 <th className="p-4">Status</th>
+                <th className="p-4">Donation For</th>
               </tr>
             </thead>
 
             <tbody className="text-sm">
               <tr className="border-t">
-                <td className="p-4">Ravi Kumar</td>
+                <td className="p-4 font-semibold">Ravi Kumar</td>
+                <td className="p-4">XXXXXXXXXX</td>
+                <td className="p-4">email@gmail.com</td>
                 <td className="p-4">₹5,000</td>
                 <td className="p-4">10 Feb 2026</td>
-                <td className="p-4 text-green-600 font-semibold">
-                  Completed
+                <td className="p-4 font-semibold">
+                  <span className="bg-green-200 px-2 rounded-xl text-green-600">Completed</span>
                 </td>
+                <td className="p-4">General</td>
+
               </tr>
             </tbody>
           </table>
@@ -225,7 +244,7 @@ export default function NGOAdminDashboard() {
           <div className="w-3/5 md:w-1/4 h-52 bg-white rounded-xl mx-auto content-center">
             <h2 className="text-center mb-8">Are you sure want to Logout ?</h2>
             <div className="flex items-center justify-center gap-4">
-              <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+              <button onClick={confirmLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                 Logout
               </button>
               <button onClick={() => setShowLogoutConfirm(false)} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">

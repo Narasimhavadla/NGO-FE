@@ -72,7 +72,7 @@ export default function AdminAddEventModal({
         },
       });
 
-      toast.success("Event created successfully 🎉");
+      toast.success("Event created successfully ");
 
       refreshEvents();
       onClose();
@@ -95,13 +95,13 @@ export default function AdminAddEventModal({
       >
         {/* MODAL */}
         <motion.div
-          className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden h-[85vh] md:h-[75vh] mt-18"
+          className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden h-[85vh] md:h-[85vh] mt-20"
           initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.85, opacity: 0 }}
         >
           {/* HEADER */}
-          <div className="bg-gradient-to-r from-[#254151] to-[#3c6e71] px-5 py-3 flex justify-between items-center">
+          <div className="bg-gradient-to-r from-[#254151] to-[#3c6e71] px-5 py-2 flex justify-between items-center">
             <h2 className="text-white font-semibold text-lg">
               Create New Event
             </h2>
@@ -115,7 +115,7 @@ export default function AdminAddEventModal({
           <div className="flex flex-col md:flex-row">
             
             {/* LEFT SIDE — IMAGE SECTION */}
-            <div className="md:w-2/5 bg-gray-50 flex flex-col items-center justify-center p-6 border-r">
+            <div className="md:w-2/5 bg-gray-50 flex flex-col items-center justify-center p-4 border-r">
               
               <label className="w-full h-44 md:h-56 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
                 {imagePreview ? (
@@ -129,7 +129,7 @@ export default function AdminAddEventModal({
                       icon={faImage}
                       className="text-3xl text-gray-400"
                     />
-                    <p className="mt-2 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-gray-500">
                       Upload Event Image
                     </p>
                   </>
@@ -183,7 +183,7 @@ export default function AdminAddEventModal({
               </div>
 
               {/* LOCATION */}
-              <div className="flex items-center gap-2 border rounded-xl px-3 py-2">
+              <div className="flex items-center gap-2 border rounded-xl px-3 py-1">
                 <FontAwesomeIcon icon={faLocationDot} />
                 <input
                   name="location"

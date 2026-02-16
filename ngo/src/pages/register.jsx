@@ -14,7 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-export default function RegisterPage() {
+export default function RegisterPage({toggle}) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -60,7 +60,7 @@ const handleSubmit = async (e) => {
 
     // Redirect to login after 1.5 sec
     setTimeout(() => {
-      navigate("/login");
+      toggle();
     }, 1500);
 
   } catch (err) {
@@ -225,14 +225,15 @@ const handleSubmit = async (e) => {
 
             {/* FOOTER */}
             <p className="text-sm text-gray-500 text-center mt-4">
-              Already have an account?
-              <a
-                href="/login"
-                className="text-[#254151] font-semibold hover:underline ml-1"
-              >
-                Login
-              </a>
-            </p>
+                Already have an account?
+                <span
+                  onClick={toggle}
+                  className="text-[#254151] font-semibold hover:underline ml-1 cursor-pointer"
+                >
+                  Login
+                </span>
+              </p>
+
           </div>
         </motion.div>
         {/* LEFT SIDE */}

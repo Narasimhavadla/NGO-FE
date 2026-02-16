@@ -223,6 +223,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false);
               statusFilter === status
                 ? "bg-[#254151] text-white"
                 : "bg-white border"
+              
             }`}
           >
             {status}

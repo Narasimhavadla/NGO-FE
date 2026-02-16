@@ -8,7 +8,8 @@ import {
   faUsers,
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link,NavLink } from "react-router-dom";
+
 
 const slides = [
   {
@@ -81,16 +82,16 @@ export default function LandingPage() {
           </p>
 
           <div className="flex gap-4 mt-6">
-            <a href="/donation">
+            <NavLink to="/donation">
             <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl shadow">
               Donate Now
             </button>
-            </a>
-            <a href="/volunteer"> 
+            </NavLink>
+            <NavLink to="/volunteer"> 
             <button className="bg-white text-green-700 px-6 py-3 rounded-2xl shadow">
               Volunteer
             </button>
-            </a>
+            </NavLink>
           </div>
         </div>
       </div>

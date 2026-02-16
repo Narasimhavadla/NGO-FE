@@ -17,6 +17,7 @@ import EventDetails from "./pages/EventDetails";
 import Login from './pages/login';
 import RegisterPage from './pages/register';
 import NGOAdminDashboard from './admin/dashboard';
+import AuthPage from './components/AuthPage';
 
 
 function App() {
@@ -38,6 +39,10 @@ function App() {
         <Route path="/volunteer" element={<VolunteerPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        
+
+
         <Route element={<ProtectedRoutes />}>
           <Route path="/admin-dashboard" element={<NGOAdminDashboard />} />
         </Route>

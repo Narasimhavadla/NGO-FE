@@ -33,7 +33,11 @@ export default function AdminDonationsPage() {
       );
 
       if (res.data.status) {
-        setDonations(res.data.data);
+
+        const sortedData = res.data.data.sort(
+          (a,b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+        setDonations(sortedData);
         setMeta(res.data.meta);
       }
     } catch (err) {
@@ -47,7 +51,10 @@ export default function AdminDonationsPage() {
   const filteredDonations = donations.filter((donation) =>
     donation.donorName
       ?.toLowerCase()
-      .includes(search.toLowerCase()) 
+      .includes(search.toLowerCase()) || 
+    donation.donorPhone 
+      ?.toLowerCase()
+      .includes(search)
   );
 
   // ================= PAGINATION =================
@@ -211,7 +218,7 @@ export default function AdminDonationsPage() {
             className="bg-white rounded-2xl shadow p-4 space-y-2"
           >
             <div className="flex justify-between">
-              <h2 className="font-semibold">
+              <h2 className="font-semibold ">
                 {donation.donorName}
               </h2>
 
@@ -267,31 +274,31 @@ export default function AdminDonationsPage() {
                 key={donation.id}
                 className="border-b"
               >
-                <td className="p-3">
+                <td className="p-2 font-semibold text-sm">
                   {donation.donorName}
                 </td>
-                 <td className="p-3">
+                 <td className="p-2">
                   {donation.donorPhone}
                 </td>
 
-                <td className="p-3">
+                <td className="p-2">
                   {donation.donorEmail}
                 </td>
 
-                <td className="p-3">
+                <td className="p-2">
                   ₹{donation.amount}
                 </td>
 
-                <td className="p-3">
+                <td className="p-2">
                   {new Date(
                     donation.createdAt
                   ).toLocaleDateString()}
                 </td>
-                <td className="p-3">
+                <td className="p-2">
                   <span className="bg-gray-300 px-2 rounded-xl text-sm">{donation.payment_method}</span>
                 </td>
 
-                <td className="p-3">
+                <td className="p-2">
                   <span
                     className={`px-2 rounded-xl text-sm font-semibold 
                     ${

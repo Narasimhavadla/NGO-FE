@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,10 +10,13 @@ import {
   faTrash,
   faEnvelope,
   faPhone,
+  faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import DeleteVolunteerModal from "../components/AdminVolDelModal";
 import ViewVolunteerModal from "../components/AdminViewVolunteerModal";
 import AdminAddVolunteer from "../components/AdminAddVolunteer";
+import * as XLSX from "xlsx"
+import {saveAs} from "file-saver"
 
 export default function AdminVolunteersPage() {
   const [search, setSearch] = useState("");
@@ -25,6 +28,10 @@ export default function AdminVolunteersPage() {
   const [showViewModal, setShowViewModal] = useState(false);
 
   const [showAddVolunteer,setShowAddVolunteer] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const [currentPage , setCurrentPage] = useState(1)
+  const rowsPerPage = 10
 
   const api = import.meta.env.VITE_API_BASE_URL;
 
@@ -51,20 +58,105 @@ export default function AdminVolunteersPage() {
   };
 
   // ✅ SEARCH FILTER
-  const filteredVolunteers = volunteers.filter((v) =>
-    v.name?.toLowerCase().includes(search.toLowerCase())
-  );
+const filteredVolunteers = volunteers.filter((v) => {
+  const matchesSearch =
+    v.name?.toLowerCase().includes(search.toLowerCase()) ||
+    v.phone?.includes(search);
+
+  const matchesStatus =
+    statusFilter === "all" || v.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
+
 
   // ✅ STATS
   const total = volunteers.length;
   const active = volunteers.filter((v) => v.status === "active").length;
   const pending = volunteers.filter((v) => v.status === "pending").length;
 
+// const rowsPerPage = 10;
+
+const indexOfLast = currentPage * rowsPerPage;
+const indexOfFirst = indexOfLast - rowsPerPage;
+
+const currentVolunteers = filteredVolunteers.slice(
+  indexOfFirst,
+  indexOfLast
+);
+
+const totalPages = Math.ceil(
+  filteredVolunteers.length / rowsPerPage
+);
+
+
+
+const exportCurrentPage = () => {
+    const data = currentVolunteers.map((v) => ({
+      Name: v.name,
+      Email: v.email,
+      Phone: v.phone,
+      City : v.city,
+      Role : v.role,
+      Status: v.status,
+      JoinedDate: new Date(v.createdAt).toLocaleDateString(),
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Current Page");
+
+    const buffer = XLSX.write(wb, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    saveAs(
+      new Blob([buffer], { type: "application/octet-stream" }),
+      "Volunteers_Current_Page.xlsx"
+    );
+  };
+
+  const exportAllData = () =>{
+    const data = filteredVolunteers.map((v) =>({
+      Name : v.name,
+      Email : v.email,
+      Phone : v.phone,
+      City : v.city,
+      Role : v.role,
+      Status : v.status,
+      JoinedAt : new Date(v.createdAt).toLocaleDateString()
+    }))
+
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,"All Data")
+
+    const buffer = XLSX.write(wb,{
+      bookType : "xlsx",
+      type : "array"
+    })
+
+    saveAs(
+      new Blob([buffer], {
+        type : "application/octet-stream",}),
+        "Volunteers_Data_Report.xlsx"
+    )
+  }
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [search, statusFilter]);
+
+
+    
+
+
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#254151]">
+        <h1 className="text-xl sm:text-2xl font-bold text-[#254151]">
           Volunteers Management
         </h1>
 
@@ -82,6 +174,16 @@ export default function AdminVolunteersPage() {
           >
             <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
             Add Volunteer
+          </button>
+          <button className="bg-green-400 px-2 py-1 rounded text-white"
+            onClick={exportAllData}>
+              <FontAwesomeIcon icon={faFileExcel}/>
+              Current Page
+          </button>
+          <button className="bg-green-700 px-2 py-1 rounded text-white"
+          onClick={exportCurrentPage}> 
+              <FontAwesomeIcon icon={faFileExcel}/>
+              All
           </button>
         </div>
       </div>
@@ -129,6 +231,59 @@ export default function AdminVolunteersPage() {
         </div>
       ) : (
         <>
+
+        <div className="flex flex-wrap gap-3 mb-4 justify-end">
+
+              {/* ALL */}
+              <button
+                onClick={() => setStatusFilter("all")}
+                className={`px-3 py-1 rounded text-white ${
+                  statusFilter === "all"
+                    ? "bg-[#254151]"
+                    : "bg-gray-400 hover:bg-gray-500"
+                }`}
+              >
+                All
+              </button>
+
+            {/* ACTIVE */}
+            <button
+              onClick={() => setStatusFilter("active")}
+              className={`px-3 py-1 rounded text-white ${
+                statusFilter === "active"
+                  ? "bg-green-600"
+                  : "bg-green-400 hover:bg-green-500"
+              }`}
+            >
+              Active
+            </button>
+
+            {/* PENDING */}
+            <button
+              onClick={() => setStatusFilter("pending")}
+              className={`px-3 py-1 rounded text-white ${
+                statusFilter === "pending"
+                  ? "bg-orange-600"
+                  : "bg-orange-400 hover:bg-orange-500"
+              }`}
+            >
+              Pending
+            </button>
+
+          {/* INACTIVE */}
+          <button
+            onClick={() => setStatusFilter("inactive")}
+            className={`px-3 py-1 rounded text-white ${
+              statusFilter === "inactive"
+                ? "bg-red-600"
+                : "bg-red-400 hover:bg-red-500"
+            }`}
+          >
+            Inactive
+          </button>
+
+        </div>
+
           {/* DESKTOP TABLE */}
           <div className="hidden lg:block bg-white rounded-2xl shadow overflow-x-auto">
             <div className="p-5 border-b font-semibold text-gray-700">
@@ -148,7 +303,7 @@ export default function AdminVolunteersPage() {
               </thead>
 
               <tbody>
-                {filteredVolunteers.map((v) => (
+                {currentVolunteers.map((v) => (
                   <tr
                     key={v.id}
                     className="border-b hover:bg-gray-50 text-sm"
@@ -198,12 +353,49 @@ export default function AdminVolunteersPage() {
                 ))}
               </tbody>
             </table>
+            <div className="flex flex-wrap justify-end gap-2 p-4">
+
+  {/* PREV */}
+  <button
+    disabled={currentPage === 1}
+    onClick={() => setCurrentPage((prev) => prev - 1)}
+    className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+  >
+    Prev
+  </button>
+
+  {/* PAGE NUMBERS */}
+  {Array.from({ length: totalPages }, (_, i) => (
+    <button
+      key={i}
+      onClick={() => setCurrentPage(i + 1)}
+      className={`px-3 py-1 rounded ${
+        currentPage === i + 1
+          ? "bg-[#254151] text-white"
+          : "bg-gray-300"
+      }`}
+    >
+      {i + 1}
+    </button>
+  ))}
+
+  {/* NEXT */}
+  <button
+    disabled={currentPage === totalPages}
+    onClick={() => setCurrentPage((prev) => prev + 1)}
+    className="px-3 py-1 rounded bg-gray-300 disabled:opacity-50"
+  >
+    Next
+  </button>
+
+</div>
+
           </div>
 
           {/* MOBILE CARDS */}
           <div className="grid gap-4 lg:hidden">
-            {filteredVolunteers.map((v) => (
-              <div
+            {currentVolunteers.map((v) => (
+              <div 
                 key={v.id}
                 className="bg-white rounded-2xl shadow p-4 space-y-3"
               >

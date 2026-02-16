@@ -79,7 +79,7 @@ export default function AdminViewEventModal({
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success("Event updated successfully ✅");
+      toast.success("Event updated successfully");
       setEditMode(false);
       refreshEvents();
     } catch (err) {
@@ -101,13 +101,13 @@ export default function AdminViewEventModal({
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl mt-12 h-[85vh] md:h-[79vh]"
+            className="bg-white w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl mt-12 h-[85vh] md:h-[79vh] "
             initial={{ scale: 0.85 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.85 }}
           >
             {/* HEADER */}
-            <div className="bg-gradient-to-r from-[#254151] to-[#3c6e71] p-4 flex justify-between items-center">
+            <div className="bg-gradient-to-r from-[#254151] to-[#3c6e71] p-3 flex justify-between items-center">
               <h2 className="text-white font-semibold text-lg">
                 Event Details
               </h2>
@@ -124,13 +124,13 @@ export default function AdminViewEventModal({
                 <img
                   src={
                     imagePreview ||
-                    "https://via.placeholder.com/600x400"
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx532xwGudsXUkqXbTFk4kURNWNnIPJltOow&s"
                   }
                   className="w-full h-full object-cover"
                 />
 
                 {editMode && (
-                  <label className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-lg cursor-pointer flex items-center gap-2 text-sm">
+                  <label className="absolute bottom-2 right-4 bg-black/70 text-white px-4 py-1 rounded-lg cursor-pointer flex items-center gap-2 text-sm">
                     <FontAwesomeIcon icon={faImage} />
                     Change Image
                     <input
@@ -146,7 +146,7 @@ export default function AdminViewEventModal({
               </div>
 
               {/* RIGHT SIDE */}
-              <div className="p-7 space-y-4 overflow-y-auto max-h-[520px]">
+              <div className="p-5 space-y-2 overflow-y-auto max-h-[520px]">
 
                 {/* TITLE + STATUS */}
                 <div className="flex justify-between items-start">
@@ -155,7 +155,7 @@ export default function AdminViewEventModal({
                       name="title"
                       value={formData.title || ""}
                       onChange={handleChange}
-                      className="input text-xl font-bold w-full"
+                      className="input text-md font-bold w-full"
                     />
                   ) : (
                     <h2 className="text-2xl font-bold text-[#254151]">
@@ -187,7 +187,7 @@ export default function AdminViewEventModal({
                 </div>
 
                 {/* INFO CARDS */}
-                <div className="space-y-3">
+                <div className="space-y-2">
 
                   <div className="flex gap-3 items-center bg-gray-50 p-2 rounded-xl">
                     <FontAwesomeIcon icon={faCalendarDays} />
@@ -249,7 +249,7 @@ export default function AdminViewEventModal({
                   {editMode ? (
                     <textarea
                       name="content"
-                      rows={3}
+                      rows={2}
                       value={formData.content || ""}
                       onChange={handleChange}
                       className="input w-full"
@@ -275,7 +275,7 @@ export default function AdminViewEventModal({
                     <button
                       onClick={handleUpdate}
                       disabled={loading}
-                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg flex gap-2 items-center"
+                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-1 rounded-lg flex gap-2 items-center"
                     >
                       <FontAwesomeIcon icon={faSave} />
                       {loading ? "Saving..." : "Save Changes"}

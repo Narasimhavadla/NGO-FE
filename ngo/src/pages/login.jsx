@@ -7,15 +7,16 @@ import {
   faEye,
   faEyeSlash,
   faHandHoldingHeart,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import {NavLink} from "react-router-dom"
+// import {NavLink} from "react-router-dom"
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
 
-export default function NGOLoginPage() {
+export default function NGOLoginPage({toggle}) {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -129,7 +130,7 @@ const handleSubmit = async (e) => {
                 </label>
                 <div className="mt-2 flex items-center border rounded-xl px-3 py-2 focus-within:ring-2 ring-[#254151]">
                   <FontAwesomeIcon
-                    icon={faEnvelope}
+                    icon={faUser}
                     className="text-gray-400 mr-2"
                   />
                   <input
@@ -212,13 +213,14 @@ const handleSubmit = async (e) => {
             {/* FOOTER */}
             <p className="text-sm text-gray-500 text-center mt-8">
               Don’t have an account?
-              <NavLink
-                to="/register"
-                className="text-[#254151] font-semibold hover:underline ml-1"
+              <span
+                onClick={toggle}
+                className="text-[#254151] font-semibold hover:underline ml-1 cursor-pointer"
               >
                 Register
-              </NavLink>
+              </span>
             </p>
+
           </div>
         </motion.div>
       </div>

@@ -62,40 +62,65 @@ export default function ViewVolunteerModal({
   };
 
   // ✅ Update Volunteer
-  const handleUpdate = async () => {
-    try {
-      setLoading(true);
+ const handleUpdate = async () => {
+  try {
+    setLoading(true);
 
-      const data = new FormData();
+    // Detect status change
+    const statusChanged =
+      formData.status !== volunteer.status;
 
-      Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
-      });
-
-      if (imageFile) {
-        data.append("image", imageFile);
-      }
-
-      await axios.put(
-        `${api}/volunteer/${volunteer.id}`,
-        data,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+    // If ONLY status changed → call status API
+    if (statusChanged && !imageFile) {
+      await axios.patch(
+        `${api}/volunteer-status/${volunteer.id}`,
+        { status: formData.status }
       );
 
-      toast.success("Volunteer updated successfully ✅");
+      toast.success(
+        "Status updated & ID Card sent 📧"
+      );
 
       refreshVolunteers();
       setEditMode(false);
       onClose();
-    } catch (error) {
-      console.error(error);
-      toast.error("Update failed ❌");
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    // Otherwise → normal update (profile/image)
+    const data = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+
+    if (imageFile) {
+      data.append("image", imageFile);
+    }
+
+    await axios.put(
+      `${api}/volunteer/${volunteer.id}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    toast.success("Volunteer updated successfully");
+
+    refreshVolunteers();
+    setEditMode(false);
+    onClose();
+  } catch (error) {
+    console.error(error);
+    toast.error("Update failed ❌");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const imageUrl =
     preview ||
@@ -114,7 +139,7 @@ export default function ViewVolunteerModal({
         >
           {/* MODAL */}
           <motion.div
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden h-[70vh] md:h-[85vh] overflow-y-auto mt-18"
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden h-[58vh] md:h-[85vh] overflow-y-auto mt-18"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
@@ -165,7 +190,7 @@ export default function ViewVolunteerModal({
 
               {/* NAME */}
               {!editMode ? (
-                <h2 className="mt-2 text-xl font-bold text-gray-800 text-center">
+                <h2 className="mt-1 text-xl font-bold text-gray-800 text-center">
                   {formData.name}
                 </h2>
               ) : (
@@ -177,7 +202,7 @@ export default function ViewVolunteerModal({
                       name: e.target.value,
                     })
                   }
-                  className="mt-2 text-xl font-bold text-center border-b-2 border-[#254151] outline-none"
+                  className="mt-1 text-xl font-bold text-center border-b-2 border-[#254151] outline-none"
                 />
               )}
 
@@ -201,7 +226,7 @@ export default function ViewVolunteerModal({
               )}
 
               {/* STATUS */}
-              <div className="mt-2">
+              <div className="mt-1">
                 {!editMode ? (
                   <span
                     className={`px-4 py-1 text-xs rounded-full font-medium ${
@@ -232,10 +257,10 @@ export default function ViewVolunteerModal({
             </div>
 
             {/* DETAILS */}
-            <div className="p-4 space-y-3">
+            <div className="p-3 space-y-2">
 
               {/* EMAIL */}
-              <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl">
+              <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
                 <FontAwesomeIcon icon={faEnvelope} />
                 <input
                   disabled={!editMode}
@@ -251,7 +276,7 @@ export default function ViewVolunteerModal({
               </div>
 
               {/* PHONE */}
-              <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl">
+              <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
                 <FontAwesomeIcon icon={faPhone} />
                 <input
                   disabled={!editMode}
@@ -267,7 +292,7 @@ export default function ViewVolunteerModal({
               </div>
 
               {/* CITY */}
-              <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl">
+              <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-xl">
                 <FontAwesomeIcon icon={faCity} />
                 <input
                   disabled={!editMode}
@@ -283,11 +308,11 @@ export default function ViewVolunteerModal({
               </div>
 
               {/* DESCRIPTION */}
-              <div className="bg-gray-50 p-3 rounded-xl">
+              <div className="bg-gray-50 p-2 rounded-xl">
                 <textarea
                   disabled={!editMode}
                   value={formData.description}
-                  rows={3}
+                  rows={2}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -301,11 +326,11 @@ export default function ViewVolunteerModal({
             </div>
 
             {/* FOOTER */}
-            <div className="p-4 border-t flex justify-center">
+            <div className="p-2 border-t flex justify-center">
               {!editMode ? (
                 <button
                   onClick={() => setEditMode(true)}
-                  className="px-6 py-2 bg-[#254151] text-white rounded-xl hover:bg-[#1b2f3a] flex items-center gap-2"
+                  className="px-6 py-1 bg-[#254151] text-white rounded-xl hover:bg-[#1b2f3a] flex items-center gap-2"
                 >
                   <FontAwesomeIcon icon={faPen} />
                   Edit Profile
@@ -314,7 +339,7 @@ export default function ViewVolunteerModal({
                 <button
                   onClick={handleUpdate}
                   disabled={loading}
-                  className="px-6 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 flex items-center gap-2"
+                  className="px-6 py-1 bg-green-600 text-white rounded-xl hover:bg-green-700 flex items-center gap-2"
                 >
                   <FontAwesomeIcon icon={faSave} />
                   {loading ? "Saving..." : "Save Changes"}

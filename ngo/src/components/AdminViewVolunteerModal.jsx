@@ -108,7 +108,7 @@ export default function ViewVolunteerModal({
 
         toast.success(
           formData.status === "active"
-            ? "✅ Volunteer Activated & Email Sent 📧"
+            ? "Volunteer Activated & Email Sent"
             : "Status updated successfully"
         );
 

@@ -190,7 +190,7 @@ const eportToExcel = () =>{
           <div key={m.id} className="bg-white p-4 rounded-xl shadow border">
             <div className="flex items-center gap-3">
               <img
-                src={`${api}/uploads/${m.image}`}
+                src={m.image}
                 alt={m.name}
                 className="w-14 h-14 rounded-full object-cover border-2 border-[#254151]"
               />
@@ -246,7 +246,7 @@ const eportToExcel = () =>{
 
             <div className="flex flex-col items-center text-center">
               <img
-                src={`${api}/uploads/${selectedMember.image}`}
+                src={selectedMember.image}
                 alt={selectedMember.name}
                 className="w-32 h-32 object-cover rounded-full border-4 border-[#254151] shadow-md mb-4"
               />

@@ -8,9 +8,14 @@ import {
   faHandHoldingHeart,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ProgramHighlights from "../components/ProgramHighlights";
 
 export default function EventDetails() {
   const { id } = useParams();
+
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   // ===== EVENTS DATA =====
   const events = [
@@ -185,45 +190,7 @@ export default function EventDetails() {
         </div>
       </section>
 
-      {/* ===== SEPARATE FULL WIDTH PROGRAM HIGHLIGHTS ===== */}
-      <section className="py-16 bg-white overflow-hidden">
-        {/* HEADING CENTER */}
-        <div className="text-center mb-12 px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#254151]">
-            Program Highlights
-          </h2>
-          <p className="text-gray-600 mt-2">
-            Glimpses from our previous impactful initiatives
-          </p>
-        </div>
-
-        {/* SCROLL GALLERY FULL WIDTH */}
-        <div className="relative w-full overflow-hidden">
-          <motion.div
-            className="flex gap-6 px-6"
-            animate={{ x: ["0%", "-100%"] }}
-            transition={{
-              repeat: Infinity,
-              duration: 20,
-              ease: "linear",
-            }}
-            whileHover={{ animationPlayState: "paused" }}
-          >
-            {[...event.gallery, ...event.gallery].map((img, index) => (
-              <div
-                key={index}
-                className="min-w-[280px] h-[190px] md:min-w-[360px] md:h-[240px] rounded-2xl overflow-hidden shadow-xl"
-              >
-                <img
-                  src={`${img}?q=80&w=1200&auto=format&fit=crop`}
-                  alt="highlight"
-                  className="w-full h-full object-cover hover:scale-110 transition duration-500"
-                />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      <ProgramHighlights fallbackImages={event.gallery} />
     </div>
   );
 }

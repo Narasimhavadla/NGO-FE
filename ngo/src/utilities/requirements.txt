@@ -1,4 +1,4 @@
-if change the status from pending to active then send a mail to respective mail as template of volunteer card of consist Volunteer Name, Volunteer Role, photo ,dhatrutha logo   
+###if change the status from pending to active then send a mail to respective mail as template of volunteer card of consist Volunteer Name, Volunteer Role, photo ,dhatrutha logo   
 
 add calender days for boolking and admin big calender
 

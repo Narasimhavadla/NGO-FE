@@ -10,6 +10,7 @@ import {
   faRightFromBracket,
   faPhotoFilm,
   faHandshake,
+  faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
 import AdminDonationsPage from "./AdminDonationsPage";
 import AdminVolunteersPage from "./AdminVolunteersPage";
@@ -18,6 +19,7 @@ import AdminBeneficiariesPage from "./AdminBeneficiariesPage";
 import AdminGalleryPage from "./AdminGallery";
 import AdminOurTeam from "./AdminTeam";
 import { faTeamspeak } from "@fortawesome/free-brands-svg-icons";
+import AdminCalender from "./AdminCalender";
 
 export default function NGOAdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -31,6 +33,7 @@ export default function NGOAdminDashboard() {
     { name: "Events", icon: faCalendarDays },
     { name: "Gallery", icon: faPhotoFilm },
     { name: "Team", icon: faHandshake },
+    { name: "Calender", icon: faCalendar },
     { name: "Logout", icon: faRightFromBracket },
     // { name: "Beneficiaries", icon: faHandHoldingHeart },
   ];
@@ -151,6 +154,8 @@ export default function NGOAdminDashboard() {
         return <AdminGalleryPage />;
       case "Team":
         return <AdminOurTeam />;
+      case "Calender":
+        return <AdminCalender />;
       // case "Logout":
       //   return <AdminOurTeam />;
     //   case "Beneficiaries":
@@ -178,7 +183,7 @@ export default function NGOAdminDashboard() {
   </div>
 
   {/* MENU */}
-<div className="flex-1 space-y-2 p-4 ">
+<div className="flex-1 space-y-1 p-4 ">
   {menuItems.map((item, index) => (
     <div
       key={index}

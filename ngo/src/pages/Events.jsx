@@ -4,15 +4,19 @@ import {
   faCalendarDays,
   faLocationDot,
   faUsers,
-  faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Events() {
+
+  const api = "http://localhost:3000/api/v1";
+
+  /* ================= UPCOMING EVENTS (STATIC) ================= */
   const events = [
     {
-      id:1,
+      id: 1,
       title: "Free Health Checkup Camp",
       date: "March 12, 2026",
       location: "Hyderabad",
@@ -21,7 +25,7 @@ export default function Events() {
         "https://images.unsplash.com/photo-1580281657527-47c1f7f7f5c4?q=80&w=1600&auto=format&fit=crop",
     },
     {
-      id:2,
+      id: 2,
       title: "Education Awareness Drive",
       date: "April 05, 2026",
       location: "Hyderabad",
@@ -30,7 +34,7 @@ export default function Events() {
         "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop",
     },
     {
-      id:3,
+      id: 3,
       title: "Food Donation Program",
       date: "May 20, 2026",
       location: "Hyderabad",
@@ -40,8 +44,48 @@ export default function Events() {
     },
   ];
 
+  /* ================= PAST HIGHLIGHTS ================= */
+
+  const [galleryImages, setGalleryImages] = useState([]);
+
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1559027615-cd4628902d4a?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1515169067868-5387ec356754?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1600&auto=format&fit=crop",
+  ];
+
+  // ✅ FETCH GALLERY
+  const fetchGallery = async () => {
+    try {
+      const res = await axios.get(`${api}/gallery`);
+
+      const galleryOnly = res.data.data.filter(
+        (img) => img.category === "gallery"
+      );
+
+      setGalleryImages(galleryOnly);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGallery();
+  }, []);
+
+  // 👉 Decide which images to show
+  const imagesToShow =
+    galleryImages.length > 0
+      ? galleryImages.map((img) => img.image)
+      : defaultImages;
+
   return (
     <div className="w-full font-sans">
+
       {/* ================= HERO ================= */}
       <section className="relative h-[70vh] flex items-center justify-center text-center text-white">
         <img
@@ -62,13 +106,12 @@ export default function Events() {
             Our Events & Campaigns
           </h1>
           <p className="max-w-2xl mx-auto text-white/90">
-            Discover the impactful events and community programs we organize to
-            uplift lives through healthcare, education, and social welfare.
+            Discover the impactful events and community programs we organize.
           </p>
         </motion.div>
       </section>
 
-      {/* ================= UPCOMING EVENTS ================= */}
+      {/* ================= UPCOMING ================= */}
       <section className="py-8 px-6 md:px-20 bg-gray-50">
         <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 smooch">
           Upcoming Events
@@ -111,32 +154,24 @@ export default function Events() {
                 </div>
 
                 <Link to={`/events/${event.id}`}>
-                  <button className="mt-4 w-full bg-[#254151] text-white py-2 rounded-lg hover:bg-orange-500 transition flex items-center justify-center gap-2">
+                  <button className="mt-4 w-full bg-[#254151] text-white py-2 rounded-lg hover:bg-orange-500 transition">
                     View Details
                   </button>
                 </Link>
-
               </div>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* ================= PAST EVENTS ================= */}
+      {/* ================= PAST HIGHLIGHTS ================= */}
       <section className="py-16 px-6 md:px-20">
         <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 smooch">
           Past Event Highlights
         </h2>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[
-            "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?q=80&w=1600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1559027615-cd4628902d4a?q=80&w=1600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1515169067868-5387ec356754?q=80&w=1600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=1600&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=1600&auto=format&fit=crop",
-          ].map((img, i) => (
+          {imagesToShow.map((img, i) => (
             <motion.img
               key={i}
               src={img}
@@ -151,29 +186,6 @@ export default function Events() {
         </div>
       </section>
 
-      {/* ================= CTA ================= */}
-      <section className="py-20 bg-[#254151] text-white text-center px-6">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-bold mb-4 Chelsea"
-        >
-          Be Part of Our Next Event
-        </motion.h2>
-
-        <p className="max-w-2xl mx-auto text-white/90 mb-6">
-          Join us as a volunteer, donor, or participant and help create
-          meaningful change in society.
-        </p>
-
-        <a href="/volunteer">
-                <button className="bg-[#F4CE50] text-[#254151] px-8 py-3 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition">
-                Get Involved
-                </button>
-        </a>
-      </section>
     </div>
   );
 }

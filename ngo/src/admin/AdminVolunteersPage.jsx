@@ -195,8 +195,8 @@ useEffect(() => {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center border-l-3 border-gray-800">
           <div>
             <p className="text-gray-500 text-sm">Total Volunteers</p>
             <h2 className="text-2xl font-bold">{total}</h2>
@@ -207,7 +207,7 @@ useEffect(() => {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center">
+        <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center border-l-3 border-gray-800">
           <div>
             <p className="text-gray-500 text-sm">Active</p>
             <h2 className="text-2xl font-bold">{active}</h2>
@@ -218,7 +218,7 @@ useEffect(() => {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center">
+        <div className="bg-white rounded-2xl shadow p-5 flex justify-between items-center border-l-3 border-gray-800">
           <div>
             <p className="text-gray-500 text-sm">Pending</p>
             <h2 className="text-2xl font-bold">{pending}</h2>

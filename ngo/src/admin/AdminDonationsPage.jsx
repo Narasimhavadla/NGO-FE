@@ -172,8 +172,30 @@ export default function AdminDonationsPage() {
       )}
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between border-l-3 border-gray-800">
+          <div>
+            <p className="text-gray-500 text-sm">
+              Total Donations
+            </p>
+            <h2 className="text-xl font-bold">
+              ₹{meta.yearlyTotal || 0}
+            </h2>
+            <p className="opacity-60 text-xs">
+              in this year
+            </p>
+          </div>
+
+          <FontAwesomeIcon
+            icon={faHandHoldingHeart}
+            className="text-2xl text-[#F4CE50]"
+          />
+        </div>
+        
+        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between border-l-3 border-gray-800">
+          
+
+          
           <div>
             <p className="text-gray-500 text-sm">
               Total Donations
@@ -192,7 +214,9 @@ export default function AdminDonationsPage() {
           />
         </div>
 
-        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between">
+        
+
+        <div className="bg-white shadow rounded-2xl p-5 flex items-center justify-between border-l-3 border-gray-800">
           <div>
             <p className="text-gray-500 text-sm">
               Total Donors
@@ -251,10 +275,10 @@ export default function AdminDonationsPage() {
       </div>
 
       {/* ================= TABLE ================= */}
-      <div className="hidden lg:block bg-white shadow-lg rounded-2xl overflow-x-auto mt-6">
+      <div className="hidden lg:block bg-white shadow-lg rounded-2xl overflow-x-auto mt-2">
         <table className="w-full text-left">
           <thead className="bg-gray-100">
-            <tr>
+            <tr className="text-sm">
               <th className="p-3">Donor</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Email</th>
@@ -272,7 +296,7 @@ export default function AdminDonationsPage() {
             {currentRecords.map((donation) => (
               <tr
                 key={donation.id}
-                className="border-b"
+                className="border-b text-sm"
               >
                 <td className="p-2 font-semibold text-sm">
                   {donation.donorName}
@@ -280,13 +304,11 @@ export default function AdminDonationsPage() {
                  <td className="p-2">
                   {donation.donorPhone}
                 </td>
-
                 <td className="p-2">
                   {donation.donorEmail}
                 </td>
-
                 <td className="p-2">
-                  ₹{donation.amount}
+                  ₹ {donation.amount}
                 </td>
 
                 <td className="p-2">
@@ -315,7 +337,7 @@ export default function AdminDonationsPage() {
 
 
                 <td className=" text-center space-x-2">
-                 <span className="bg-orange-200 text-orange-600 font-semibold px-3 rounded-xl text-sm">{donation.donationFor} </span>                 
+                 <span className="bg-blue-200 text-blue-600 font-semibold px-3 rounded-xl text-sm">{donation.donationFor} </span>                 
                 </td>
               </tr>
             ))}

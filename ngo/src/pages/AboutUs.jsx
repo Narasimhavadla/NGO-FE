@@ -9,6 +9,7 @@ import {
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
+import dhatrutha from "../assets/DhatruthaLogo.png"
 
 export default function AboutUs() {
   return (
@@ -42,15 +43,15 @@ export default function AboutUs() {
 
       {/* ================= OUR STORY ================= */}
       <section className="py-16 px-6 md:px-20 bg-white">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-12 items-center object-fit">
           <motion.img
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&w=1200&auto=format&fit=crop"
+            src={dhatrutha}
             alt="story"
-            className="rounded-2xl shadow-lg"
+            className="rounded-2xl shadow-lg w-3/5 mx-auto"
           />
 
           <motion.div
@@ -241,7 +242,7 @@ export default function AboutUs() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-bold mb-4"
+          className="text-3xl md:text-4xl  mb-4 smooch" 
         >
           Be Part of the Change
         </motion.h2>

@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 
 export default function AdminAddTeamModal({
   open,
@@ -27,6 +28,7 @@ export default function AdminAddTeamModal({
     designation: "",
     phone: "",
     email: "",
+    instaUrl : ""
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -80,6 +82,7 @@ export default function AdminAddTeamModal({
         designation: "",
         phone: "",
         email: "",
+        instaUrl : ""
       });
       setImageFile(null);
       setImagePreview(null);
@@ -145,7 +148,8 @@ export default function AdminAddTeamModal({
               </div>
 
               {/* FORM SIDE */}
-              <div className="p-6 space-y-4">
+              <div className="p-5 space-y-1">
+                  <p className="text-sm">Image Mandatory</p>
 
                 {/* NAME */}
                 <div>
@@ -157,7 +161,7 @@ export default function AdminAddTeamModal({
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
+                    className="w-full border rounded-lg px-3 py-1 mt-1"
                   />
                 </div>
 
@@ -174,7 +178,7 @@ export default function AdminAddTeamModal({
                     name="designation"
                     value={formData.designation}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
+                    className="w-full border rounded-lg px-3 py-1 mt-1"
                   />
                 </div>
 
@@ -188,7 +192,7 @@ export default function AdminAddTeamModal({
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
+                    className="w-full border rounded-lg px-3 py-1 mt-1"
                   />
                 </div>
 
@@ -205,7 +209,22 @@ export default function AdminAddTeamModal({
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-3 py-2 mt-1"
+                    className="w-full border rounded-lg px-3 py-1 mt-1"
+                  />
+                </div>
+                 <div>
+                  <label className="text-sm text-gray-600">
+                    <FontAwesomeIcon
+                      icon={faInstagram}
+                      className="mr-1"
+                    />
+                    Insta Url
+                  </label>
+                  <input
+                    name="instaUrl"
+                    value={formData.instaUrl}
+                    onChange={handleChange}
+                    className="w-full border rounded-lg px-3 py-1 mt-1"
                   />
                 </div>
 

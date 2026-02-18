@@ -5,13 +5,26 @@ import {
   faLocationDot,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Events() {
 
-  const api = "http://localhost:3000/api/v1";
+  const api = import.meta.env.VITE_API_BASE_URL;
+
+  const [data,setData] = useState([])
+
+
+  useEffect(() =>{
+    const fetchEvents = async () =>{
+      const res = await axios.get(`${api}/events`)
+      setData(res.data.data)
+      // console.log(res.data.data)
+    }
+
+    fetchEvents()
+  },[])
 
   /* ================= UPCOMING EVENTS (STATIC) ================= */
   const events = [
@@ -118,7 +131,7 @@ export default function Events() {
         </h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {events.map((event, i) => (
+          {data.map((event, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 40 }}
@@ -138,10 +151,16 @@ export default function Events() {
                   {event.title}
                 </h3>
 
-                <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <FontAwesomeIcon icon={faCalendarDays} />
-                  {event.date}
-                </div>
+               <div className="flex items-center gap-2 text-gray-600 text-sm">
+                <FontAwesomeIcon icon={faCalendarDays} />
+
+                {new Date(event.dateOfEvent).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "2-digit",
+                  year: "numeric",
+                })} — {event.time}
+              </div>
+
 
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
                   <FontAwesomeIcon icon={faLocationDot} />
@@ -150,14 +169,15 @@ export default function Events() {
 
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
                   <FontAwesomeIcon icon={faUsers} />
-                  {event.participants}
+                  {event.participants} + people
                 </div>
 
-                <Link to={`/events/${event.id}`}>
+                <NavLink to={`/events/${event.id}`}>
+                {/* <NavLink to={`/events/1`}> */}
                   <button className="mt-4 w-full bg-[#254151] text-white py-2 rounded-lg hover:bg-orange-500 transition">
                     View Details
                   </button>
-                </Link>
+                </NavLink>
               </div>
             </motion.div>
           ))}
@@ -170,7 +190,7 @@ export default function Events() {
           Past Event Highlights
         </h2>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {/* <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {imagesToShow.map((img, i) => (
             <motion.img
               key={i}
@@ -183,7 +203,7 @@ export default function Events() {
               className="rounded-2xl shadow-md hover:scale-105 transition cursor-pointer object-cover h-64 w-full"
             />
           ))}
-        </div>
+        </div> */}
       </section>
 
     </div>

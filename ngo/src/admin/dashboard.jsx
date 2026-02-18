@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartLine,
@@ -12,20 +13,44 @@ import {
   faHandshake,
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
+
 import AdminDonationsPage from "./AdminDonationsPage";
 import AdminVolunteersPage from "./AdminVolunteersPage";
 import AdminEventsPage from "./AdminEventsPage";
-import AdminBeneficiariesPage from "./AdminBeneficiariesPage";
 import AdminGalleryPage from "./AdminGallery";
 import AdminOurTeam from "./AdminTeam";
-import { faTeamspeak } from "@fortawesome/free-brands-svg-icons";
 import AdminCalender from "./AdminCalender";
 
 export default function NGOAdminDashboard() {
+  const api = import.meta.env.VITE_API_BASE_URL;
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const [showLogoutConfirm,setShowLogoutConfirm] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  const [stats, setStats] = useState({
+    totalDonationAmount: 0,
+    totalDonors: 0,
+    totalVolunteers: 0,
+    totalEvents: 0,
+    recentDonations: [],
+  });
+
+  /* ================= FETCH ================= */
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const res = await axios.get(`${api}/stats`);
+        setStats(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  /* ================= MENU ================= */
   const menuItems = [
     { name: "Dashboard", icon: faChartLine },
     { name: "Donations", icon: faMoneyBillWave },
@@ -35,111 +60,207 @@ export default function NGOAdminDashboard() {
     { name: "Team", icon: faHandshake },
     { name: "Calender", icon: faCalendar },
     { name: "Logout", icon: faRightFromBracket },
-    // { name: "Beneficiaries", icon: faHandHoldingHeart },
   ];
 
-
-  const handleLogout = () =>{
-
-    setShowLogoutConfirm(true)
-    
-    // localStorage.removeItem("token");
-    // localStorage.removeItem("user");
-    // window.location.href = "/login";
-  }
-  /* ---------------- TAB COMPONENTS ---------------- */
-
+  /* ================= LOGOUT ================= */
   const confirmLogout = () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      // localStorage.removeItem("rzp_checkout_anon_id");
-      // localStorage.removeItem("rzp_device_id");
-      // localStorage.removeItem("rzp_stored_checkout_id")
-      window.location.href = "/auth";
+    localStorage.clear();
+    window.location.href = "/auth";
+  };
 
-  }
-
-
+  /* ================= DASHBOARD TAB ================= */
   const DashboardTab = () => (
     <>
-      {/* CARDS */}
-      <div className="p-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ===== STATS CARDS ===== */}
+      <div className="p-4 sm:p-6 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
           {
             title: "Total Donations",
-            value: "₹2,45,000",
+            value: `₹${stats.totalDonationAmount}`,
             icon: faMoneyBillWave,
           },
-          { title: "Volunteers", value: "320", icon: faUsers },
-          { title: "Events", value: "18", icon: faCalendarDays },
-          // {
-          //   title: "Beneficiaries",
-          //   value: "1,120",
-          //   icon: faHandHoldingHeart,
-          // },
+          {
+            title: "Donors",
+            value: stats.totalDonors,
+            icon: faHandHoldingHeart,
+          },
+          {
+            title: "Volunteers",
+            value: stats.totalVolunteers,
+            icon: faUsers,
+          },
+          {
+            title: "Events",
+            value: stats.totalEvents,
+            icon: faCalendarDays,
+          },
         ].map((card, i) => (
           <div
             key={i}
-            className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition"
+            className="bg-white p-4 sm:p-6 rounded-2xl shadow hover:shadow-lg transition border-l-3 border-gray-800"
           >
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-gray-500">{card.title}</p>
-                <h2 className="text-2xl font-bold mt-2">{card.value}</h2>
+                <p className="text-gray-500 text-sm">
+                  {card.title}
+                </p>
+                <h2 className="text-xl sm:text-2xl font-bold mt-2">
+                  {card.value}
+                </h2>
               </div>
+
               <FontAwesomeIcon
                 icon={card.icon}
-                className="text-3xl text-[#254151]"
+                className="text-2xl sm:text-3xl text-[#254151]"
               />
             </div>
           </div>
         ))}
       </div>
 
-      {/* TABLE */}
-      <div className="p-6">
-        <div className="bg-white rounded-2xl shadow overflow-x-auto">
-          <div className="p-6 border-b font-semibold text-gray-700">
+      {/* ===== RECENT DONATIONS ===== */}
+      <div className="p-4 sm:p-6">
+        <div className="bg-white rounded-2xl shadow">
+          <div className="p-4 sm:p-6 border-b font-semibold text-gray-700">
             Recent Donations
           </div>
 
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 text-gray-600 text-sm">
-              <tr>
-                <th className="p-4">Donor Name</th>
-                <th className="p-4">Phone</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Amount</th>
-                <th className="p-4">Date</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Donation For</th>
-              </tr>
-            </thead>
+          {/* ================= DESKTOP TABLE ================= */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50 text-gray-600 text-sm">
+                <tr>
+                  <th className="p-4">Donor Name</th>
+                  <th className="p-4">Amount</th>
+                  <th className="p-4">Date & Time</th>
+                  <th className="p-4">Phone</th>
+                  <th className="p-4">Method</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Paid for</th>
+                </tr>
+              </thead>
 
-            <tbody className="text-sm">
-              <tr className="border-t">
-                <td className="p-4 font-semibold">Ravi Kumar</td>
-                <td className="p-4">XXXXXXXXXX</td>
-                <td className="p-4">email@gmail.com</td>
-                <td className="p-4">₹5,000</td>
-                <td className="p-4">10 Feb 2026</td>
-                <td className="p-4 font-semibold">
-                  <span className="bg-green-200 px-2 rounded-xl text-green-600">Completed</span>
-                </td>
-                <td className="p-4">General</td>
+              <tbody className="text-sm">
+                {stats.recentDonations.map((d) => (
+                  <tr key={d.id} className="border-t">
+                    <td className="p-4 font-semibold">
+                      {d.donorName}
+                    </td>
 
-              </tr>
-            </tbody>
-          </table>
+                    <td className="p-4">
+                      ₹{Number(d.amount).toLocaleString()}
+                    </td>
+
+                    <td className="p-4">
+                      {new Date(d.createdAt).toLocaleString(
+                        "en-IN",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )}
+                    </td>
+
+                    <td className="p-4">
+                      {d.donorPhone}
+                    </td>
+
+                    <td className="p-4">
+                      <span className="bg-gray-200 px-2 rounded-xl text-sm">{d.payment_method}</span>
+                    </td>
+
+                    <td className="p-4">
+                      <span className={`px-2 text-sm rounded-xl ${d.payment_status == "success" ? "bg-green-100 text-green-600" : "bg-orange-200 text-orange-600"}`}>{d.payment_status}</span>
+                    </td>
+
+                    <td className="p-4">
+                      <span className="font-semibold bg-blue-100 text-blue-600 px-2 py-1 rounded-xl text-xs">
+                        {d.donationFor}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ================= MOBILE CARDS ================= */}
+          <div className="md:hidden p-4 space-y-4">
+            {stats.recentDonations.map((d) => (
+              <div
+                key={d.id}
+                className="border rounded-xl p-4 shadow-sm"
+              >
+                {/* Name + Amount */}
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-gray-800">
+                    {d.donorName}
+                  </h3>
+
+                  <span className="font-bold text-[#254151]">
+                    ₹{Number(d.amount).toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Date */}
+                <p className="text-sm text-gray-500 mb-2">
+                  {new Date(d.createdAt).toLocaleString(
+                    "en-IN",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}
+                </p>
+
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <p>
+                    <span className="font-medium">
+                      Phone:
+                    </span>{" "}
+                    {d.donorPhone}
+                  </p>
+
+                  <p>
+                    <span className="font-medium">
+                      Method:
+                    </span>{" "}
+                    {d.payment_method}
+                  </p>
+
+                  <p>
+                    <span className="font-medium">
+                      Status:
+                    </span>{" "}
+                    <span className={` px-3 rounded-xl py-1 ${d.payment_status == "success" ? "bg-green-200 text-green-600" : "bg-orange-200 text-orange-600"}`}>{d.payment_status}</span>
+                  </p>
+
+                  <p>
+                    <span className="font-medium">
+                      For:
+                    </span>{" "}
+                    <span className={` px-3 py-1 rounded-xl text-xs
+                       ${d.donationFor == "general" ? "bg-orange-100 text-orange-600" : "bg-blue-200 text-blue-600"}`}>
+                      {d.donationFor}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
   );
 
- 
-
-  /* -------- TAB RENDER FUNCTION -------- */
-
+  /* ================= TAB RENDER ================= */
   const renderTab = () => {
     switch (activeTab) {
       case "Dashboard":
@@ -156,109 +277,99 @@ export default function NGOAdminDashboard() {
         return <AdminOurTeam />;
       case "Calender":
         return <AdminCalender />;
-      // case "Logout":
-      //   return <AdminOurTeam />;
-    //   case "Beneficiaries":
-    //     return <AdminBeneficiariesPage />;
       default:
         return <DashboardTab />;
     }
-  }; 
+  };
+
+  /* ================= UI ================= */
   return (
-    <div className="min-h-screen  bg-gray-100 flex">
-      {/* SIDEBAR */}
-    {/* SIDEBAR */}
-<div
-  className={`
-    fixed lg:static top-0 left-0 z-50
-    bg-[#254151] text-white
-    transition-all duration-300
-    ${sidebarOpen ? "w-64 h-[100vh]" : "w-0 lg:w-20 !h-[100vh]"}
-    overflow-hidden flex flex-col 
-  `}
->
-  {/* LOGO */}
-  <div className={`h-20 flex items-center justify-center border-b border-white/20 font-bold ${sidebarOpen ? "text-xl" : "text-sm"}`}>
-    {sidebarOpen ? "Dhatrutha" : "Dhatrutha"}
-  </div>
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* ===== SIDEBAR ===== */}
+      <div
+        className={`fixed lg:static z-50 bg-[#254151] text-white transition-all duration-300
+        ${sidebarOpen ? "w-52" : "w-0 lg:w-20"}
+        h-screen overflow-hidden`}
+      >
+        <div className="h-20 flex items-center justify-center border-b border-white/20 font-bold text-lg">
+          Dhatrutha
+        </div>
 
-  {/* MENU */}
-<div className="flex-1 space-y-1 p-4 ">
-  {menuItems.map((item, index) => (
-    <div
-      key={index}
-      onClick={() => {
+        <div className="p-4 space-y-1">
+          {menuItems.map((item, i) => (
+            <div
+              key={i}
+              onClick={() => {
+                if (item.name === "Logout") {
+                  setShowLogoutConfirm(true);
+                  return;
+                }
+                setActiveTab(item.name);
+                if (window.innerWidth < 1024)
+                  setSidebarOpen(false);
+              }}
+              className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer ${
+                activeTab === item.name
+                  ? "bg-white/20"
+                  : "hover:bg-white/10"
+              }`}
+            >
+              <FontAwesomeIcon icon={item.icon} />
+              {sidebarOpen && <span>{item.name}</span>}
+            </div>
+          ))}
+        </div>
+      </div>
 
-        // 👉 If Logout clicked
-        if (item.name === "Logout") {
-          handleLogout();
-
-          // ✅ Close sidebar in mobile view
-          if (window.innerWidth < 1024) {
-            setSidebarOpen(false);
-          }
-
-          return;
-        }
-
-        // 👉 Other menu items
-        setActiveTab(item.name);
-
-        if (window.innerWidth < 1024) {
-          setSidebarOpen(false);
-        }
-      }}
-      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition ${
-        activeTab === item.name
-          ? "bg-white/20"
-          : "hover:bg-white/10"
-      }`}
-    >
-      <FontAwesomeIcon icon={item.icon} />
-      {sidebarOpen && <span>{item.name}</span>}
-    </div>
-  ))}
-</div>
-</div>
-
-
-      {/* MAIN */}
+      {/* ===== MAIN ===== */}
       <div className="flex-1 flex flex-col">
-        {/* TOPBAR */}
-        <div className="h-16 bg-white shadow flex items-center justify-between px-6">
+        <div className="h-16 bg-white shadow flex items-center justify-between px-4 sm:px-6">
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={() =>
+              setSidebarOpen(!sidebarOpen)
+            }
             className="text-[#254151] text-xl"
           >
             <FontAwesomeIcon icon={faBars} />
           </button>
 
-          <h1 className="text-2xl font-bold text-gray-700">
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-700">
             {activeTab}
           </h1>
         </div>
 
-        {/* TAB CONTENT */}
-        <div className="flex-1 ">{renderTab()}</div>
+        <div className="flex-1 overflow-y-auto">
+          {renderTab()}
+        </div>
       </div>
 
-
+      {/* ===== LOGOUT MODAL ===== */}
       {showLogoutConfirm && (
-        <div className="w-full h-[95vh] bg-black/50 z-index-40 absolute">
-        <div className="flex items-center justify-center h-full">
-          <div className="w-3/5 md:w-1/4 h-52 bg-white rounded-xl mx-auto content-center">
-            <h2 className="text-center mb-8">Are you sure want to Logout ?</h2>
-            <div className="flex items-center justify-center gap-4">
-              <button onClick={confirmLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl w-80 text-center">
+            <h2 className="mb-6 font-semibold">
+              Are you sure want to Logout?
+            </h2>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={confirmLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+              >
                 Logout
               </button>
-              <button onClick={() => setShowLogoutConfirm(false)} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
+
+              <button
+                onClick={() =>
+                  setShowLogoutConfirm(false)
+                }
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+              >
                 Cancel
               </button>
             </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );

@@ -1,1 +1,220 @@
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.9342690412586!2d78.44668907390415!3d17.318720304782154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcbbd05d89d9b9d%3A0x385e70ac6f07a8f7!2sDHA&#39;TRUTH&#39;A%20being%20a%20giver!5e0!3m2!1sen!2sin!4v1770638726694!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarDays,
+  faLocationDot,
+  faUsers,
+  faHandHoldingHeart,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ProgramHighlights from "../components/ProgramHighlights";
+
+export default function EventDetails() {
+  const { id } = useParams();
+
+  const api = import.meta.env.VITE_API_BASE_URL;
+ 
+
+  const [events,setEvents] = useState(null)
+
+ useEffect(() => {
+  const fetchEvent = async () => {
+    try {
+      const res = await axios.get(`${api}/event/${id}`);
+      setEvents(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchEvent();
+}, [id]);
+
+
+ 
+
+  if (!events) {
+    return (
+      <div className="h-screen flex items-center justify-center text-xl font-semibold">
+        Event Not Found
+      </div>
+    );
+  }
+
+  const handleDonate = async () => {
+  try {
+    const orderRes = await axios.post(
+      `${api}/create-order`,
+      {
+        donorName: "Guest User", // or logged user
+        donorPhone: "9999999999",
+        donorEmail: "guest@gmail.com",
+        amount: 500,
+
+        // 🆕 IMPORTANT
+        donationFor: events.title,
+      }
+    );
+
+    const order = orderRes.data.order;
+
+    openRazorpay(order);
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const openRazorpay = (order) => {
+  const options = {
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+    amount: order.amount,
+    currency: "INR",
+    name: "NGO Donation",
+    description: "Event Donation",
+    order_id: order.id,
+
+    handler: async function (response) {
+      await axios.post(
+        `${api}/verify-payment`,
+        response
+      );
+
+      alert("Payment Successful 🎉");
+    },
+
+    prefill: {
+      name: "Guest User",
+      email: "guest@gmail.com",
+      contact: "9999999999",
+    },
+
+    theme: {
+      color: "#254151",
+    },
+  };
+
+  const rzp = new window.Razorpay(options);
+  rzp.open();
+};
+
+
+
+  return (
+    <div className="w-full font-sans bg-gray-50">
+      {/* ===== HERO ===== */}
+      <section className="relative h-[60vh] flex items-center justify-center text-white text-center">
+        <img
+          src={
+            events?.image ||
+            "https://media.istockphoto.com/id/1477731413/photo/volunteers-hands-stacking-in-a-circle.jpg?s=612x612&w=0&k=20&c=z2nN0tsYAq2hgtgDyBKFROMTlwAAst9KNBv1pIS3Mp4="
+          }
+          alt={events?.title || "Event Image"}
+          onError={(e) => {
+            e.target.src =
+              "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=1600&auto=format&fit=crop";
+          }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-black/60" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 px-6 max-w-3xl"
+        >
+          <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            {events.title}
+          </h1>
+
+          <p className="text-white/90">
+            Be a part of this impactful initiative and help us bring positive
+            change to society.
+          </p>
+
+          <button className="mt-5 bg-[#F4CE50] text-[#254151] px-6 py-2 rounded-xl font-semibold hover:bg-orange-400 hover:text-white transition flex items-center gap-2 mx-auto">
+            <FontAwesomeIcon icon={faHandHoldingHeart} />
+            Donate Now
+          </button>
+        </motion.div>
+      </section>
+
+      {/* ===== CONTENT ===== */}
+      <section className="py-12 px-6 md:px-20 max-w-6xl mx-auto grid lg:grid-cols-3 gap-10">
+        {/* LEFT */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* ABOUT */}
+          <div className="bg-white p-6 rounded-2xl shadow">
+            <h2 className="text-2xl font-bold mb-3 text-[#254151]">
+              About This Event
+            </h2>
+            <p className="text-gray-700 leading-relaxed text-sm">
+              {events.content}
+            </p>
+          </div>
+
+          {/* IMPACT */}
+          <div className="bg-white p-6 rounded-2xl shadow">
+            <h2 className="text-2xl font-bold mb-3 text-[#254151]">
+              Event Impact
+            </h2>
+            <p className="text-gray-700 leading-relaxed text-sm">
+              <span className="font-bold">{events.participants} + peoples. </span>
+              This event created a meaningful impact in the community by bringing people together for a shared cause. It helped raise awareness, provided essential support, and encouraged active participation from volunteers and beneficiaries. Such initiatives strengthen social responsibility and inspire positive change for a better future.
+
+            </p>
+          </div>
+        </div>
+
+        {/* RIGHT SIDEBAR */}
+        <div className="bg-white p-4 rounded-2xl shadow space-y-5 h-fit">
+          <h3 className="text-xl font-bold text-[#254151]">
+            Event Information
+          </h3>
+
+          <div className="flex items-center gap-3 text-gray-700">
+            <FontAwesomeIcon icon={faCalendarDays} />
+           {new Date(events.dateOfEvent).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "2-digit",
+                  year: "numeric",
+                })} — {events.time}
+          </div>
+
+          <div className="flex items-center gap-3 text-gray-700">
+            <FontAwesomeIcon icon={faLocationDot} />
+            {events.location}
+          </div>
+
+          <div className="flex items-center gap-3 text-gray-700">
+            <FontAwesomeIcon icon={faUsers} />
+            <span>{events.participants} + peoples </span>
+          </div>
+
+          <button
+           className="w-full bg-[#F4CE50] text-[#254151] py-2 rounded-xl font-semibold hover:bg-orange-400
+            hover:text-white transition flex items-center justify-center gap-2"
+            onClick={handleDonate}>
+            <FontAwesomeIcon icon={faHandHoldingHeart} />
+            Donate Now
+          </button>
+
+          <Link to="/events">
+            <button className="w-full border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition flex items-center justify-center gap-2">
+              <FontAwesomeIcon icon={faArrowLeft} />
+              Back to Events
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* <ProgramHighlights fallbackImages={events.gallery} /> */}
+    </div>
+  );
+}
+

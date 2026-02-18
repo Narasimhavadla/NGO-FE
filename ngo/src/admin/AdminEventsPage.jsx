@@ -154,7 +154,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false);
 
       {/* STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-        <div className="bg-white shadow rounded-2xl p-5 flex justify-between">
+        <div className="bg-white shadow rounded-2xl p-5 flex justify-between border-l-3 border-gray-800">
           <div>
             <p>Total Events</p>
             <h2 className="text-2xl font-bold">
@@ -167,7 +167,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false);
           />
         </div>
 
-        <div className="bg-white shadow rounded-2xl p-5 flex justify-between">
+        <div className="bg-white shadow rounded-2xl p-5 flex justify-between border-l-3 border-gray-800">
           <div>
             <p>Completed</p>
             <h2 className="text-2xl font-bold">
@@ -186,7 +186,7 @@ const [showDeleteModal, setShowDeleteModal] = useState(false);
           />
         </div>
 
-        <div className="bg-white shadow rounded-2xl p-5 flex justify-between">
+        <div className="bg-white shadow rounded-2xl p-5 flex justify-between border-l-3 border-gray-800">
           <div>
             <p>Upcoming</p>
             <h2 className="text-2xl font-bold">

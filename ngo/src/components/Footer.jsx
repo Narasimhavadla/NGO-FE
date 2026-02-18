@@ -1,5 +1,6 @@
 import { faFacebook, faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {NavLink} from "react-router-dom"
 
 export default function Footer() {
   return (
@@ -27,30 +28,30 @@ export default function Footer() {
           </h3>
           <div className="space-y-2 text-sm ">
             
-              <a href="/" className="hover:text-orange-500 transition">
+              <NavLink to="/" className="hover:text-orange-500 transition">
                 Our Programs
-              </a>
+              </NavLink>
               <br></br>
             
             
-              <a href="/about-us" className="hover:text-orange-500 transition">
+              <NavLink to="/about-us" className="hover:text-orange-500 transition">
                 About Us
-              </a>
+              </NavLink>
               <br></br>
             
-              <a href="/our-team" className="hover:text-orange-500 transition">
+              <NavLink to="/our-team" className="hover:text-orange-500 transition">
                 Meet our Team
-              </a>
+              </NavLink>
               <br></br>
             
-              <a href="/contact-us" className="hover:text-orange-500 transition">
+              <NavLink to="/contact-us" className="hover:text-orange-500 transition">
                 Contact
-              </a>
+              </NavLink>
               <br></br>
             
-              <a href="/donation" className="hover:text-orange-500 transition">
+              <NavLink to="/donation" className="hover:text-orange-500 transition">
                 Donate
-              </a>
+              </NavLink>
               <br></br>
             
             

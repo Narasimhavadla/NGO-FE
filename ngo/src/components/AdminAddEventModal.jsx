@@ -145,7 +145,7 @@ export default function AdminAddEventModal({
                 />
               </label>
 
-              <p className="text-xs text-gray-400 mt-3 text-center">
+              <p className="text-xs text-gray-400 mt-2 text-center">
                 Recommended: 1200 × 600 banner image
               </p>
             </div>
@@ -153,7 +153,7 @@ export default function AdminAddEventModal({
             {/* RIGHT SIDE — FORM */}
             <form
               onSubmit={handleSubmit}
-              className="md:w-3/5 p-6 space-y-4"
+              className="md:w-3/5 p-6 space-y-2"
             >
               {/* TITLE */}
               <input
@@ -224,6 +224,8 @@ export default function AdminAddEventModal({
                 <option value="active">Active</option>
                 <option value="completed">Completed</option>
               </select>
+
+             
 
               {/* SUBMIT */}
               <button

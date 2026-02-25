@@ -2,6 +2,9 @@
 
 add calender days for boolking and admin big calender
 
-send email to select donor for new event update for donation
+###send email to select donor for new event update for donation
+
+
+ admin can give access feature to  
 
 

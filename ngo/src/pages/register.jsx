@@ -31,7 +31,7 @@ const api = import.meta.env.VITE_API_BASE_URL ;
     email: "",
     phone: "",
     password: "",
-    confirmPassword: "",
+    // confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -52,7 +52,7 @@ const handleSubmit = async (e) => {
         username: formData.name,
         phone: formData.phone,
         password: formData.password,
-        role: "user", // ✅ default role
+        role: "user", 
       }
     );
 

@@ -12,6 +12,8 @@ import {
   faPhotoFilm,
   faHandshake,
   faCalendar,
+  faCalendarCheck,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 
 import AdminDonationsPage from "./AdminDonationsPage";
@@ -20,6 +22,8 @@ import AdminEventsPage from "./AdminEventsPage";
 import AdminGalleryPage from "./AdminGallery";
 import AdminOurTeam from "./AdminTeam";
 import AdminCalender from "./AdminCalender";
+import AdminBookings from "./AdminBookings";
+import AdminNotify from "./AdminNotify";
 
 export default function NGOAdminDashboard() {
   const api = import.meta.env.VITE_API_BASE_URL;
@@ -59,6 +63,8 @@ export default function NGOAdminDashboard() {
     { name: "Gallery", icon: faPhotoFilm },
     { name: "Team", icon: faHandshake },
     { name: "Calender", icon: faCalendar },
+    { name: "Bookings", icon: faCalendarCheck },
+    { name: "Notify", icon: faEnvelope },
     { name: "Logout", icon: faRightFromBracket },
   ];
 
@@ -277,6 +283,10 @@ export default function NGOAdminDashboard() {
         return <AdminOurTeam />;
       case "Calender":
         return <AdminCalender />;
+      case "Bookings":
+        return <AdminBookings />;
+      case "Notify":
+        return <AdminNotify />;
       default:
         return <DashboardTab />;
     }
@@ -291,11 +301,11 @@ export default function NGOAdminDashboard() {
         ${sidebarOpen ? "w-52" : "w-0 lg:w-20"}
         h-screen overflow-hidden`}
       >
-        <div className="h-20 flex items-center justify-center border-b border-white/20 font-bold text-lg">
+        <div className="h-12 flex items-center justify-center border-b border-white/20 font-bold text-lg">
           Dhatrutha
         </div>
 
-        <div className="p-4 space-y-1">
+        <div className="p-2">
           {menuItems.map((item, i) => (
             <div
               key={i}
@@ -308,7 +318,7 @@ export default function NGOAdminDashboard() {
                 if (window.innerWidth < 1024)
                   setSidebarOpen(false);
               }}
-              className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer ${
+              className={`flex items-center gap-3 p-2 rounded-xl cursor-pointer mt-1 ${
                 activeTab === item.name
                   ? "bg-white/20"
                   : "hover:bg-white/10"
@@ -345,7 +355,7 @@ export default function NGOAdminDashboard() {
 
       {/* ===== LOGOUT MODAL ===== */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center" onClick={() =>{setShowLogoutConfirm(false)}}>
           <div className="bg-white p-6 rounded-xl w-80 text-center">
             <h2 className="mb-6 font-semibold">
               Are you sure want to Logout?

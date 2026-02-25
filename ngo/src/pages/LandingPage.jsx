@@ -9,6 +9,7 @@ import {
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link,NavLink } from "react-router-dom";
+import AvailabilityCalender from "../components/AvailabiltyCalender";
 
 
 const slides = [
@@ -95,6 +96,7 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+      <AvailabilityCalender />
 
       {/* ================= ABOUT ================= */}
       <section className="py-16 px-6 md:px-20 bg-gray-50">

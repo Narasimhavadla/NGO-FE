@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -7,34 +7,51 @@ import {
   faUsers,
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 export default function AdminNotify() {
-  // Replace with API data
-  const donors = [
-    { id: 1, name: "Ramesh Kumar", email: "ramesh@gmail.com" },
-    { id: 2, name: "Priya Sharma", email: "priya@gmail.com" },
-    { id: 3, name: "Suresh Reddy", email: "suresh@gmail.com" },
-    { id: 4, name: "Anjali Verma", email: "anjali@gmail.com" },
-  ];
+  const api = import.meta.env.VITE_API_BASE_URL;
 
   const [search, setSearch] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [subject, setSubject] = useState("");
-  const [category, setCategory] = useState("Newsletter");
+  const [mailCategory, setMailCategory] = useState("Newsletter");
   const [message, setMessage] = useState("");
   const [attachment, setAttachment] = useState(null);
 
-  const filteredDonors = donors.filter(
-    (d) =>
-      d.name.toLowerCase().includes(search.toLowerCase()) ||
-      d.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const [data, setData] = useState([]);
+  const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${api}/bulk-emails`);
+        setData(res.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // 🔎 Filter + Search Logic
+  const filteredUsers = data.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase());
+
+    const matchesFilter =
+      filter === "all" ? true : user.category === filter;
+
+    return matchesSearch && matchesFilter;
+  });
 
   const handleSelectAll = () => {
-    if (selectedUsers.length === filteredDonors.length) {
+    if (selectedUsers.length === filteredUsers.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredDonors.map((d) => d.id));
+      setSelectedUsers(filteredUsers.map((u) => u.id));
     }
   };
 
@@ -46,36 +63,79 @@ export default function AdminNotify() {
     }
   };
 
-  const handleSend = () => {
-    const selectedEmails = donors
+const handleSend = async () => {
+  try {
+    const selectedEmails = data
       .filter((d) => selectedUsers.includes(d.id))
       .map((d) => d.email);
 
     const payload = {
       emails: selectedEmails,
       subject,
-      category,
       message,
-      attachment,
     };
 
-    console.log("Sending Mail Data:", payload);
+    const res = await axios.post(
+      `${api}/send-bulk-email`,
+      payload
+    );
+
     alert("Notification sent successfully!");
+    console.log(res.data);
+
+  } catch (error) {
+    console.error(error);
+    alert("Failed to send emails");
+  }
+};
+
+  const getBadgeColor = (category) => {
+    switch (category) {
+      case "donors":
+        return "bg-green-100 text-green-700";
+      case "volunteers":
+        return "bg-blue-100 text-blue-700";
+      case "lead":
+        return "bg-purple-100 text-purple-700";
+      default:
+        return "bg-gray-100 text-gray-600";
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="bg-white shadow-xl rounded-2xl p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="bg-white shadow-xl rounded-2xl p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        {/* LEFT SIDE */}
-        <div className="border rounded-xl p-4 flex flex-col h-[600px]">
+        {/* LEFT PANEL */}
+        <div className="border rounded-xl p-4 flex flex-col h-[600px] lg:col-span-5">
 
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-[#254151]">
             <FontAwesomeIcon icon={faUsers} />
-            Donor List
+            Recipients
           </h2>
 
-          {/* Search */}
+          {/* FILTER BUTTONS */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {["all", "donors", "volunteers", "lead"].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => {
+                  setFilter(cat);
+                  setSelectedUsers([]);
+                }}
+                className={`px-3 py-1 rounded-full text-sm capitalize transition 
+                ${
+                  filter === cat
+                    ? "bg-[#254151] text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* SEARCH */}
           <div className="relative mb-4">
             <FontAwesomeIcon
               icon={faSearch}
@@ -83,66 +143,73 @@ export default function AdminNotify() {
             />
             <input
               type="text"
-              placeholder="Search donors..."
+              placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#254151]"
             />
           </div>
 
-          {/* Select All */}
+          {/* SELECT ALL */}
           <div className="flex items-center mb-3 border-b pb-2">
             <input
               type="checkbox"
               checked={
-                filteredDonors.length > 0 &&
-                selectedUsers.length === filteredDonors.length
+                filteredUsers.length > 0 &&
+                selectedUsers.length === filteredUsers.length
               }
               onChange={handleSelectAll}
               className="mr-2"
             />
             <label className="font-medium text-gray-700">
-              Select All
+              Select All ({filteredUsers.length})
             </label>
           </div>
 
-          {/* Donor List */}
+          {/* USER LIST */}
           <div className="overflow-y-auto flex-1 space-y-2 pr-2">
-            {filteredDonors.map((donor) => (
+            {filteredUsers.map((user) => (
               <div
-                key={donor.id}
+                key={user.id}
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 transition"
               >
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
-                    checked={selectedUsers.includes(donor.id)}
-                    onChange={() => handleCheckboxChange(donor.id)}
+                    checked={selectedUsers.includes(user.id)}
+                    onChange={() => handleCheckboxChange(user.id)}
                   />
                   <div>
                     <p className="font-medium text-gray-800">
-                      {donor.name}
+                      {user.name}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {donor.email}
+                      {user.email}
                     </p>
                   </div>
                 </div>
+
+                {/* CATEGORY BADGE */}
+                <span
+                  className={`text-xs px-3 py-1 rounded-full font-medium ${getBadgeColor(
+                    user.category
+                  )}`}
+                >
+                  {user.category}
+                </span>
               </div>
             ))}
           </div>
-
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="border rounded-xl p-6 flex flex-col">
+        {/* RIGHT PANEL */}
+        <div className="border rounded-xl p-6 flex flex-col lg:col-span-7">
 
           <h2 className="text-xl font-semibold mb-6 text-[#254151] flex items-center gap-2">
             <FontAwesomeIcon icon={faEnvelope} />
-            Compose Notification
+            Compose Email Notification
           </h2>
 
-          {/* Subject */}
           <label className="mb-2 font-medium">Subject</label>
           <input
             type="text"
@@ -152,11 +219,10 @@ export default function AdminNotify() {
             className="mb-4 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#254151]"
           />
 
-          {/* Category */}
-          <label className="mb-2 font-medium">Category</label>
+          <label className="mb-2 font-medium">Type</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={mailCategory}
+            onChange={(e) => setMailCategory(e.target.value)}
             className="mb-4 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#254151]"
           >
             <option>Newsletter</option>
@@ -164,7 +230,6 @@ export default function AdminNotify() {
             <option>Donation Alert</option>
           </select>
 
-          {/* Message */}
           <label className="mb-2 font-medium">Message</label>
           <textarea
             rows="6"
@@ -174,7 +239,6 @@ export default function AdminNotify() {
             className="mb-4 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#254151]"
           />
 
-          {/* Attachment */}
           <label className="mb-2 font-medium">Attachment</label>
           <div className="mb-4 flex items-center gap-3">
             <label className="flex items-center gap-2 cursor-pointer bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200">
@@ -193,7 +257,6 @@ export default function AdminNotify() {
             )}
           </div>
 
-          {/* Selected Count */}
           <p className="mb-4 text-sm text-gray-600">
             Selected Recipients:{" "}
             <span className="font-semibold">
@@ -201,7 +264,6 @@ export default function AdminNotify() {
             </span>
           </p>
 
-          {/* Send Button */}
           <button
             onClick={handleSend}
             disabled={selectedUsers.length === 0}
@@ -210,7 +272,6 @@ export default function AdminNotify() {
             <FontAwesomeIcon icon={faPaperPlane} />
             Send Notification
           </button>
-
         </div>
       </div>
     </div>
